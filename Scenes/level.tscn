@@ -1,0 +1,540 @@
+[gd_scene load_steps=6 format=3 uid="uid://tgyr7hgqhaqn"]
+
+[ext_resource type="PackedScene" uid="uid://wqgmmnqbiwuv" path="res://Scenes/tile.tscn" id="1_tumq0"]
+[ext_resource type="Script" uid="uid://crjsxqm26ndkg" path="res://Scripts/level.gd" id="1_wqkje"]
+[ext_resource type="Script" uid="uid://cwdq7u6s27bb" path="res://Scripts/Managers/economy_manager.gd" id="2_0f350"]
+[ext_resource type="Script" uid="uid://ci137qbi7m01a" path="res://Scripts/Managers/blight_manager.gd" id="3_8c0lf"]
+[ext_resource type="Script" uid="uid://cxisjwiqw244t" path="res://Scripts/Managers/narrative_manager.gd" id="4_754fn"]
+
+[node name="Level" type="Control" node_paths=PackedStringArray("EconomyManager", "BlightManager", "NarrativeManager", "GameViewport", "GameGrid")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_wqkje")
+EconomyManager = NodePath("EconomyManager")
+BlightManager = NodePath("BlightManager")
+NarrativeManager = NodePath("NarrativeManager")
+GameViewport = NodePath("GameViewport")
+GameGrid = NodePath("GameViewport/GameGrid")
+
+[node name="EconomyManager" type="Node" parent="."]
+script = ExtResource("2_0f350")
+
+[node name="BlightManager" type="Node" parent="."]
+script = ExtResource("3_8c0lf")
+
+[node name="NarrativeManager" type="Node" parent="."]
+script = ExtResource("4_754fn")
+
+[node name="GameViewport" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -687.5
+offset_top = -849.0
+offset_right = 687.5
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="GameGrid" type="GridContainer" parent="GameViewport"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -670.0
+offset_top = -842.0
+offset_right = 670.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 0
+columns = 16
+
+[node name="Tile" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile2" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile3" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile4" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile5" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile6" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile7" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile8" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile9" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile10" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile11" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile12" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile13" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile14" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile15" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile16" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile17" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile18" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile19" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile20" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile21" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile22" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile23" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile24" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile25" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile26" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile27" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile28" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile29" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile30" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile31" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile32" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile33" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile34" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile35" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile36" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile37" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile38" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile39" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile40" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile41" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile42" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile43" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile44" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile45" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile46" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile47" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile48" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile49" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile50" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile51" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile52" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile53" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile54" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile55" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile56" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile57" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile58" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile59" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile60" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile61" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile62" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile63" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile64" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile65" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile66" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile67" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile68" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile69" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile70" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile71" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile72" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile73" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile74" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile75" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile76" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile77" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile78" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile79" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile80" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile81" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile82" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile83" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile84" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile85" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile86" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile87" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile88" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile89" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile90" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile91" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile92" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile93" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile94" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile95" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile96" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile97" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile98" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile99" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile100" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile101" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile102" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile103" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile104" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile105" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile106" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile107" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile108" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile109" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile110" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile111" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile112" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile113" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile114" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile115" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile116" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile117" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile118" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile119" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile120" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile121" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile122" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile123" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile124" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile125" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile126" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile127" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile128" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile129" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile130" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile131" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile132" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile133" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile134" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile135" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile136" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile137" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile138" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile139" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile140" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile141" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile142" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile143" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile144" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile145" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile146" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile147" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile148" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile149" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile150" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile151" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile152" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile153" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile154" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile155" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile156" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile157" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile158" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile159" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2
+
+[node name="Tile160" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
+layout_mode = 2

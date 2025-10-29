@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://wqgmmnqbiwuv"]
+
+[ext_resource type="Script" uid="uid://cv4uad2dvlt4y" path="res://Scripts/tile.gd" id="1_rvq8p"]
+[ext_resource type="Texture2D" uid="uid://cp2vdrbn2mrln" path="res://Assets/Spritesheet.png" id="1_xsjyq"]
+[ext_resource type="PackedScene" uid="uid://dgbojfandfkki" path="res://Scenes/node.tscn" id="2_4kj4d"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xsjyq"]
+atlas = ExtResource("1_xsjyq")
+region = Rect2(1544, 292, 80, 80)
+
+[node name="Tile" type="Control"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1520.0
+offset_bottom = -820.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rvq8p")
+node_scene = ExtResource("2_4kj4d")
+
+[node name="TileTexture" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("AtlasTexture_xsjyq")
+metadata/_edit_use_anchors_ = true
+
+[node name="TileButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+metadata/_edit_use_anchors_ = true

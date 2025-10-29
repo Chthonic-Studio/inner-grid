@@ -1,0 +1,132 @@
+[gd_scene load_steps=5 format=3 uid="uid://dgbojfandfkki"]
+
+[ext_resource type="Texture2D" uid="uid://cp2vdrbn2mrln" path="res://Assets/Spritesheet.png" id="1_5g7os"]
+[ext_resource type="Script" uid="uid://21u3n58mqy0q" path="res://Scripts/node.gd" id="1_6b8r6"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rvq8p"]
+atlas = ExtResource("1_5g7os")
+region = Rect2(222, -0.35661316, 157, 155.35661)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5g7os"]
+atlas = ExtResource("1_5g7os")
+region = Rect2(487, 620, 27, 153)
+
+[node name="Node" type="Button" node_paths=PackedStringArray("up_connection", "right_connection", "left_connection", "down_connection", "logic_timer")]
+custom_minimum_size = Vector2(80, 80)
+anchors_preset = -1
+anchor_right = 0.04875
+anchor_bottom = 0.08611111
+offset_right = 2.0
+offset_bottom = 2.5
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_6b8r6")
+up_connection = NodePath("TileContent/ConnectionVFX/Up")
+right_connection = NodePath("TileContent/ConnectionVFX/Right")
+left_connection = NodePath("TileContent/ConnectionVFX/Left")
+down_connection = NodePath("TileContent/ConnectionVFX/Down")
+logic_timer = NodePath("LogicTimer")
+metadata/_edit_use_anchors_ = true
+
+[node name="TileContent" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ProgressBar" type="ProgressBar" parent="TileContent"]
+layout_mode = 0
+offset_right = 4.0
+offset_bottom = 78.0
+value = 100.0
+fill_mode = 2
+show_percentage = false
+
+[node name="NodeVisuals" type="TextureRect" parent="TileContent"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = -35.0
+offset_right = 35.0
+offset_bottom = 35.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("AtlasTexture_rvq8p")
+expand_mode = 1
+
+[node name="ConnectionVFX" type="Control" parent="TileContent"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Up" type="NinePatchRect" parent="TileContent/ConnectionVFX"]
+custom_minimum_size = Vector2(4, 6)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -2.0
+offset_right = 2.0
+offset_bottom = 6.0
+grow_horizontal = 2
+texture = SubResource("AtlasTexture_5g7os")
+
+[node name="Right" type="NinePatchRect" parent="TileContent/ConnectionVFX"]
+custom_minimum_size = Vector2(4, 6)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -3.0
+offset_right = 4.0
+offset_bottom = 3.0
+grow_horizontal = 0
+grow_vertical = 2
+rotation = 1.5690484
+texture = SubResource("AtlasTexture_5g7os")
+
+[node name="Left" type="NinePatchRect" parent="TileContent/ConnectionVFX"]
+custom_minimum_size = Vector2(4, 6)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -74.00001
+offset_top = -3.0
+offset_right = -70.00001
+offset_bottom = 3.0
+grow_horizontal = 0
+grow_vertical = 2
+rotation = 1.5690484
+texture = SubResource("AtlasTexture_5g7os")
+
+[node name="Down" type="NinePatchRect" parent="TileContent/ConnectionVFX"]
+custom_minimum_size = Vector2(4, 6)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -2.0
+offset_top = 74.0
+offset_right = 2.0
+offset_bottom = 80.0
+grow_horizontal = 2
+texture = SubResource("AtlasTexture_5g7os")
+
+[node name="LogicTimer" type="Timer" parent="."]
+wait_time = 5.0
