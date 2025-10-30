@@ -1,5 +1,11 @@
 class_name GameTile extends Node
 
+signal request_placement(tile, grid_position)
+signal request_purge(tile, grid_position)
+signal tile_blight_changed(tile, grid_position, blight_value)
+signal node_placed(tile, grid_position, node_instance)
+signal node_removed(tile, grid_position)
+
 @export var node_scene : PackedScene
 
 @export_category("Tile Status")
@@ -9,6 +15,7 @@ class_name GameTile extends Node
 @export var has_blight: bool
 @export var blight_value: int = 0
 
+@onready var tile_button = $TileButton
 var local_node : GameNode
 
 # Called when the node enters the scene tree for the first time.

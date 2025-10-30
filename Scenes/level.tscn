@@ -21,6 +21,7 @@ BlightManager = NodePath("BlightManager")
 NarrativeManager = NodePath("NarrativeManager")
 GameViewport = NodePath("GameViewport")
 GameGrid = NodePath("GameViewport/GameGrid")
+tile_scene = ExtResource("1_tumq0")
 
 [node name="EconomyManager" type="Node" parent="."]
 script = ExtResource("2_0f350")
