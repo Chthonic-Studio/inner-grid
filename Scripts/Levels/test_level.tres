@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="LevelResource" load_steps=2 format=3 uid="uid://cen4fm0os488p"]
+
+[ext_resource type="Script" uid="uid://dhhta8v24dclb" path="res://Scripts/Levels/level_resource.gd" id="1_dhy0h"]
+
+[resource]
+script = ExtResource("1_dhy0h")
+blocked_tiles = Array[Vector2i]([Vector2i(3, 1), Vector2i(4, 1), Vector2i(4, 2), Vector2i(4, 3)])
+metadata/_custom_type_script = "uid://dhhta8v24dclb"
