@@ -12,6 +12,9 @@ class_name Level extends Node
 @export var GameViewport: Control
 @export var GameGrid: GridContainer
 
+@export_category("Tile Scene")
+@export var tile_scene : PackedScene
+
 var win_condition : int
 
 # Called when the node enters the scene tree for the first time.
