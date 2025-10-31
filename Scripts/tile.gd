@@ -18,15 +18,14 @@ signal node_removed(tile, grid_position)
 @export var has_blight: bool
 @export var blight_value: int = 0
 
-#@onready var tile_button = $TileButton
+@onready var tile_button = $TileButton
 var local_node : GameNode
 
 func _ready() -> void:
-	var tile_button = $TileButton
 	tile_button.pressed.connect(_on_tile_button_pressed)
 	pass # Replace with function body.
 
-func setup(row_: int, col_: int, blocked_: bool, blight_resist_: float, dps_: float, special_: Variant) -> void:
+func setup(row_: int, col_: int, blocked_: bool, blight_resist_: float, dps_: float) -> void:
 	row = row_
 	col = col_
 	blocked = blocked_
@@ -38,12 +37,14 @@ func setup(row_: int, col_: int, blocked_: bool, blight_resist_: float, dps_: fl
 		tile_blocked()
 		# Optionally, disable visuals/interactivity here
 	else:
-		pass
+		if tile_button == null:
+			tile_button = $TileButton
 		# Connect input signals as needed for active tiles
-		#tile_button.pressed.connect(_on_tile_button_pressed)
+		tile_button.pressed.connect(_on_tile_button_pressed)
 
 func tile_blocked() -> void:
-	var tile_button = $TileButton
+	if tile_button == null:
+		tile_button = $TileButton
 	tile_button.disabled = true
 	var tex = $TileTexture
 	if tex:
@@ -59,6 +60,9 @@ func _on_tile_button_pressed() -> void:
 func on_tile_input( input : InputEvent ) -> void:
 	pass
 	
+func placement_request() -> void:
+	request_placement.emit(self)
+
 func update_blight( value : int ) -> void:
 	pass 	
 	

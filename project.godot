@@ -23,6 +23,7 @@ TimeManager="*res://Globals/time_manager.gd"
 LevelTransition="*res://Globals/level_transition.tscn"
 LevelManager="*res://Globals/level_manager.gd"
 SaveManager="*res://Globals/save_manager.gd"
+MainUi="*res://Scenes/main_ui.tscn"
 
 [display]
 

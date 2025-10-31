@@ -19,11 +19,17 @@ class_name Level extends Node
 @export var level_resource: Resource = null ## --- LEVEL DATA (for testing override)
 
 var win_condition : int
+
 const GRID_COLS := 16
 const GRID_ROWS := 10
 
+var _current_selected_node_res: NodeType = null
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	# Connect to the Level Manager signal to know what the player wants to build
+	LevelManager.node_selected.connect(_on_node_selected)
+	
 	# 1. Get level configuration from LevelManager or exported override
 	if level_resource == null:
 		level_resource = LevelManager.get_current_level_resource()
@@ -51,11 +57,40 @@ func _ready() -> void:
 	
 	# 4. Set win condition
 	win_condition = level_resource.resource_target
+	
+	for child in GameGrid.get_children():
+		child.request_placement.connect()
 
+func _on_node_selected(node_resource: NodeType):
+	# Store what the player wants to place
+	_current_selected_node_res = node_resource
+	# Placement mode (update cursor?)
+	
+func _on_tile_placement_requested(tile: GameTile):
+	if Input.is_action_just_pressed("right_click"):
+		if tile.placed_node != null:
+			request_purge(tile)
+		return # Stop processing
+	
+	# Check for Left-Click (Placement)
+	if Input.is_action_just_pressed("left_click"):
+		# Check 1: Is the player holding a node to place?
+		if _current_selected_node_res == null:
+			return # Not in placement mode
+
+		# Check 2: Is the tile empty?
+		if tile.placed_node != null:
+			return # Tile is occupied
+
+		# Check 3: Can we afford it?
+		if EconomyManager.can_afford(_current_selected_node_res.base_cost):
+			# All checks passed!
+			EconomyManager.spend_resources(_current_selected_node_res.base_cost)
+			
 func request_placement() -> void:
 	pass
 	
-func request_purge() -> void:
+func request_purge( tile ) -> void:
 	pass
 
 func check_win_condition() -> void:

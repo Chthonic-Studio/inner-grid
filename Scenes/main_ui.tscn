@@ -1,6 +1,19 @@
-[gd_scene format=3 uid="uid://diiwpm6ued0th"]
+[gd_scene load_steps=2 format=3 uid="uid://diiwpm6ued0th"]
 
-[node name="MainUI" type="CanvasLayer"]
+[ext_resource type="Script" uid="uid://dju5t3ee1bxua" path="res://Scripts/UI/main_ui.gd" id="1_gmh8u"]
+
+[node name="MainUI" type="CanvasLayer" node_paths=PackedStringArray("generator_button", "harvester_button", "shield_button", "sensor_button", "synergy_button", "conduit_button", "purifier_button", "blight_clock", "main_resource_label", "build_resource_label")]
+script = ExtResource("1_gmh8u")
+generator_button = NodePath("NodePalette/Generator")
+harvester_button = NodePath("NodePalette/Harvester")
+shield_button = NodePath("NodePalette/Shield")
+sensor_button = NodePath("NodePalette/Sensor")
+synergy_button = NodePath("NodePalette/Synergy")
+conduit_button = NodePath("NodePalette/Conduit")
+purifier_button = NodePath("NodePalette/Purifier")
+blight_clock = NodePath("TopPanel/BlightClock")
+main_resource_label = NodePath("TopPanel/MainResource")
+build_resource_label = NodePath("TopPanel/BuildResource")
 
 [node name="TopPanel" type="HBoxContainer" parent="."]
 custom_minimum_size = Vector2(0, 50)
@@ -9,7 +22,12 @@ anchor_right = 1.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 
-[node name="ResourceDisplay" type="Label" parent="TopPanel"]
+[node name="BuildResource" type="Label" parent="TopPanel"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+text = "Resource Display"
+
+[node name="MainResource" type="Label" parent="TopPanel"]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 text = "Resource Display"
@@ -24,29 +42,29 @@ horizontal_alignment = 2
 anchors_preset = -1
 anchor_left = 0.0025
 anchor_top = 0.19222222
-anchor_right = 0.1625
+anchor_right = 0.131875
 anchor_bottom = 0.8066667
 metadata/_edit_use_anchors_ = true
 
-[node name="Button" type="Button" parent="NodePalette"]
+[node name="Generator" type="Button" parent="NodePalette"]
 layout_mode = 2
 
-[node name="Button2" type="Button" parent="NodePalette"]
+[node name="Harvester" type="Button" parent="NodePalette"]
 layout_mode = 2
 
-[node name="Button3" type="Button" parent="NodePalette"]
+[node name="Shield" type="Button" parent="NodePalette"]
 layout_mode = 2
 
-[node name="Button4" type="Button" parent="NodePalette"]
+[node name="Sensor" type="Button" parent="NodePalette"]
 layout_mode = 2
 
-[node name="Button5" type="Button" parent="NodePalette"]
+[node name="Synergy" type="Button" parent="NodePalette"]
 layout_mode = 2
 
-[node name="Button6" type="Button" parent="NodePalette"]
+[node name="Conduit" type="Button" parent="NodePalette"]
 layout_mode = 2
 
-[node name="Button7" type="Button" parent="NodePalette"]
+[node name="Purifier" type="Button" parent="NodePalette"]
 layout_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="."]

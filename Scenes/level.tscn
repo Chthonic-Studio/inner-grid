@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://tgyr7hgqhaqn"]
+[gd_scene load_steps=8 format=3 uid="uid://tgyr7hgqhaqn"]
 
 [ext_resource type="PackedScene" uid="uid://wqgmmnqbiwuv" path="res://Scenes/tile.tscn" id="1_tumq0"]
 [ext_resource type="Script" uid="uid://crjsxqm26ndkg" path="res://Scripts/level.gd" id="1_wqkje"]
@@ -6,6 +6,10 @@
 [ext_resource type="Resource" uid="uid://cen4fm0os488p" path="res://Scripts/Levels/test_level.tres" id="3_0f350"]
 [ext_resource type="Script" uid="uid://ci137qbi7m01a" path="res://Scripts/Managers/blight_manager.gd" id="3_8c0lf"]
 [ext_resource type="Script" uid="uid://cxisjwiqw244t" path="res://Scripts/Managers/narrative_manager.gd" id="4_754fn"]
+
+[sub_resource type="Environment" id="Environment_0f350"]
+glow_enabled = true
+fog_enabled = true
 
 [node name="Level" type="Control" node_paths=PackedStringArray("EconomyManager", "BlightManager", "NarrativeManager", "GameViewport", "GameGrid")]
 layout_mode = 3
@@ -541,3 +545,6 @@ layout_mode = 2
 
 [node name="Tile160" parent="GameViewport/GameGrid" instance=ExtResource("1_tumq0")]
 layout_mode = 2
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0f350")
