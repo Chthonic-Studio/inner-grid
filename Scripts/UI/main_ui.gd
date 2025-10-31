@@ -28,36 +28,43 @@ func update_labels( main_resource: int, build_resource: int) -> void:
 func _on_generator_button_pressed():
 	node_button_clicked = "Generator"
 	LevelManager.emit_signal("node_selected", node_button_clicked)
+	print("Button pressed: ", node_button_clicked)
 	node_button_clicked = ""
 	
 func _on_harvester_button_pressed():
 	node_button_clicked = "Harvester"
 	LevelManager.emit_signal("node_selected", node_button_clicked)
+	print("Button pressed: ", node_button_clicked)
 	node_button_clicked = ""
 
 func _on_shield_button_pressed():
 	node_button_clicked = "Shield"
 	LevelManager.emit_signal("node_selected", node_button_clicked)
+	print("Button pressed: ", node_button_clicked)
 	node_button_clicked = ""
 
 func _on_sensor_button_pressed():
 	node_button_clicked = "Sensor"
 	LevelManager.emit_signal("node_selected", node_button_clicked)
+	print("Button pressed: ", node_button_clicked)
 	node_button_clicked = ""
 
 func _on_synergy_button_pressed():
 	node_button_clicked = "Synergy"
 	LevelManager.emit_signal("node_selected", node_button_clicked)
+	print("Button pressed: ", node_button_clicked)
 	node_button_clicked = ""
 
 func _on_conduit_button_pressed():
 	node_button_clicked = "Conduit"
 	LevelManager.emit_signal("node_selected", node_button_clicked)
+	print("Button pressed: ", node_button_clicked)
 	node_button_clicked = ""
 
 func _on_purifier_button_pressed():
 	node_button_clicked = "Purifier"
 	LevelManager.emit_signal("node_selected", node_button_clicked)
+	print("Button pressed: ", node_button_clicked)
 	node_button_clicked = ""
 		
 func _on_affordability_changed(affordable_nodes: Dictionary) -> void:

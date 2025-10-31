@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dgbojfandfkki"]
+[gd_scene load_steps=6 format=3 uid="uid://dgbojfandfkki"]
 
 [ext_resource type="Texture2D" uid="uid://cp2vdrbn2mrln" path="res://Assets/Spritesheet.png" id="1_5g7os"]
 [ext_resource type="Script" uid="uid://21u3n58mqy0q" path="res://Scripts/node.gd" id="1_6b8r6"]
@@ -10,6 +10,8 @@ region = Rect2(487, 620, 27, 153)
 [sub_resource type="AtlasTexture" id="AtlasTexture_rvq8p"]
 atlas = ExtResource("1_5g7os")
 region = Rect2(222, -0.35661316, 157, 155.35661)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1ig23"]
 
 [node name="Node" type="Button" node_paths=PackedStringArray("up_connection", "right_connection", "left_connection", "down_connection", "logic_timer")]
 custom_minimum_size = Vector2(80, 80)
@@ -128,6 +130,17 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("AtlasTexture_rvq8p")
 expand_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="TileContent/NodeVisuals"]
+visible = false
+material = SubResource("ShaderMaterial_1ig23")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.9060958, 0.9001826, 0.90305257, 1)
 
 [node name="LogicTimer" type="Timer" parent="."]
 wait_time = 5.0

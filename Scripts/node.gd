@@ -24,6 +24,7 @@ signal node_destroyed
 func _ready() -> void:
 	logic_timer.start(node_type.function_timer)
 
+
 func _on_logic_timer_timeout() -> void:
 	node_type.calculate_output()
 

@@ -1,8 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://wqgmmnqbiwuv"]
+[gd_scene load_steps=8 format=3 uid="uid://wqgmmnqbiwuv"]
 
 [ext_resource type="Script" uid="uid://cv4uad2dvlt4y" path="res://Scripts/tile.gd" id="1_rvq8p"]
 [ext_resource type="Texture2D" uid="uid://cp2vdrbn2mrln" path="res://Assets/Spritesheet.png" id="1_xsjyq"]
 [ext_resource type="PackedScene" uid="uid://dgbojfandfkki" path="res://Scenes/node.tscn" id="2_4kj4d"]
+[ext_resource type="Shader" uid="uid://b3b348r4njpgr" path="res://Assets/Shaders/bubbles.gdshader" id="3_g7l7l"]
+[ext_resource type="Texture2D" uid="uid://cf7ymq3p0yyf4" path="res://Assets/bubbles.png" id="4_y55j6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1f6se"]
+shader = ExtResource("3_g7l7l")
+shader_parameter/bottom_color = Color(0.95, 0.057, 0.057, 1)
+shader_parameter/top_color = Color(0, 0, 0, 1)
+shader_parameter/tex = ExtResource("4_y55j6")
+shader_parameter/layer_count = 8
+shader_parameter/time_scale = 0.10000000475
+shader_parameter/base_intensity = 0.800000038
+shader_parameter/size = 0.07701000365725
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xsjyq"]
 atlas = ExtResource("1_xsjyq")
@@ -22,6 +34,9 @@ script = ExtResource("1_rvq8p")
 node_scene = ExtResource("2_4kj4d")
 
 [node name="TileTexture" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0.7058824)
+self_modulate = Color(1, 1, 1, 0.7058824)
+material = SubResource("ShaderMaterial_1f6se")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

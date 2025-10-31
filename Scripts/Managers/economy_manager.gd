@@ -4,17 +4,15 @@ signal resource_changed(main_resource, building_resource)
 
 @export_category("Resources")
 @export var main_resource : int = 0
-@export var building_resource : int = 0
+@export var building_resource : int = 100
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	pass # Replace with function body.
 
-func spend_resources(node_cost: Dictionary) -> void:
-	if node_cost.has("building"):
-		building_resource -= node_cost["building"]
-	if node_cost.has("main"):
-		main_resource -= node_cost["main"]
+func spend_resources(node_cost: int, main_cost: int) -> void:
+	building_resource -= node_cost
+	main_resource -= main_cost
 	emit_signal("resource_changed", main_resource, building_resource)
 	LevelManager.emit_signal("income_updated", main_resource, building_resource)
 
@@ -28,10 +26,10 @@ func gain_resources(amount: int, type: String) -> void:
 	emit_signal("resource_changed", main_resource, building_resource)
 	LevelManager.emit_signal("income_updated", main_resource, building_resource)
 
-func can_afford(node_cost: Dictionary) -> bool:
-	if node_cost.has("building") and building_resource < node_cost["building"]:
+func can_afford(node_cost: int, main_cost:int) -> bool:
+	if building_resource < node_cost:
 		return false
-	if node_cost.has("main") and node_cost["main"] > 0 and main_resource < node_cost["main"]:
+	if main_resource < node_cost:
 		return false
 	return true
 

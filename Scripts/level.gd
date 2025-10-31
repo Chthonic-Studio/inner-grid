@@ -20,6 +20,16 @@ signal affordability_changed(affordable_nodes: Dictionary)
 @export_category("Level Resource")
 @export var level_resource: Resource = null ## --- LEVEL DATA (for testing override)
 
+@export_category("Node Resources")
+@export var core_node : NodeType
+@export var generator_node : NodeType
+@export var harvester_node : NodeType
+@export var shield_node : NodeType
+@export var sensor_node : NodeType
+@export var synergy_node : NodeType
+@export var conduit_node : NodeType
+@export var purifier_node : NodeType
+
 var win_condition : int
 
 const GRID_COLS := 16
@@ -64,8 +74,22 @@ func _ready() -> void:
 		child.request_placement.connect(self._on_tile_placement_requested)
 
 # Called by UI when player selects a node type
-func _on_node_selected(node_resource: NodeType):
-	_current_selected_node_res = node_resource
+func _on_node_selected(node : String):
+	if node == "Generator":
+		_current_selected_node_res = generator_node
+	if node == "Harvester":
+		_current_selected_node_res = harvester_node
+	if node == "Shield":
+		_current_selected_node_res = generator_node
+	if node == "Sensor":
+		_current_selected_node_res = sensor_node
+	if node == "Synergy":
+		_current_selected_node_res = synergy_node
+	if node == "Conduit":
+		_current_selected_node_res = conduit_node
+	if node == "Purifier":
+		_current_selected_node_res = generator_node
+	
 
 # Called by Tile, passes self and grid_position
 func _on_tile_placement_requested(tile: GameTile, grid_position: Vector2i) -> void:
@@ -85,12 +109,12 @@ func _on_tile_placement_requested(tile: GameTile, grid_position: Vector2i) -> vo
 			AudioManager.play("fail")
 			return
 		# Check affordability
-		if not EconomyManager.can_afford(_current_selected_node_res.base_cost):
+		if not EconomyManager.can_afford(_current_selected_node_res.placement_cost, _current_selected_node_res.main_resource_placement_cost):
 			tile.flash_red()
 			AudioManager.play("fail")
 			return
 		# All clear, place node
-		EconomyManager.spend_resources(_current_selected_node_res.base_cost)
+		EconomyManager.spend_resources(_current_selected_node_res.placement_cost, _current_selected_node_res.main_resource_placement_cost)
 		tile.set_node(_current_selected_node_res)
 		AudioManager.play("place_node")
 		# Update UI (resource signals will fire)
@@ -132,5 +156,5 @@ func update_affordability():
 	var node_names = ["Generator", "Harvester", "Shield", "Sensor", "Synergy", "Conduit", "Purifier"]
 	for s in node_names:
 		var node_type = LevelManager.get_node_type(name) # Assumes you have a way to get this Resource
-		result[name] = EconomyManager.can_afford(node_type.base_cost)
+		result[name] = EconomyManager.can_afford(node_type.placement_cost, node_type.main_resource_placement_cost)
 	emit_signal("affordability_changed", result)
