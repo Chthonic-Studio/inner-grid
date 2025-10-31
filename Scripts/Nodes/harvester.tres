@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="NodeType" load_steps=2 format=3 uid="uid://d4ank6ws6r3yi"]
+
+[ext_resource type="Script" uid="uid://cqkvg2w0mdqsa" path="res://Scripts/Nodes/node_resource.gd" id="1_r5nss"]
+
+[resource]
+script = ExtResource("1_r5nss")
+node_name = "Harvester"
+metadata/_custom_type_script = "uid://cqkvg2w0mdqsa"

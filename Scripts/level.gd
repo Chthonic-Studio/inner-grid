@@ -1,5 +1,7 @@
 class_name Level extends Node
 
+signal affordability_changed(affordable_nodes: Dictionary) 
+
 @export_category("Managers")
 @warning_ignore("shadowed_global_identifier")
 @export var EconomyManager: EconomyManager
@@ -29,6 +31,7 @@ var _current_selected_node_res: NodeType = null
 func _ready() -> void:
 	# Connect to the Level Manager signal to know what the player wants to build
 	LevelManager.node_selected.connect(_on_node_selected)
+	LevelManager.affordability_changed.connect(update_affordability)
 	
 	# 1. Get level configuration from LevelManager or exported override
 	if level_resource == null:
@@ -51,50 +54,83 @@ func _ready() -> void:
 			var blocked = level_resource.blocked_tiles.has(pos)
 			var blight_resist = level_resource.tile_blight_resistance.get(pos, 0.0)
 			var dps = level_resource.tile_dps_effect.get(pos, 0.0)
-			var special = level_resource.tile_special.get(pos, null)
-			tile.setup(row, col, blocked, blight_resist, dps, special)
+			tile.setup(row, col, blocked, blight_resist, dps)
 			GameGrid.add_child(tile)
 	
 	# 4. Set win condition
 	win_condition = level_resource.resource_target
 	
 	for child in GameGrid.get_children():
-		child.request_placement.connect()
+		child.request_placement.connect(self._on_tile_placement_requested)
 
+# Called by UI when player selects a node type
 func _on_node_selected(node_resource: NodeType):
-	# Store what the player wants to place
 	_current_selected_node_res = node_resource
-	# Placement mode (update cursor?)
-	
-func _on_tile_placement_requested(tile: GameTile):
+
+# Called by Tile, passes self and grid_position
+func _on_tile_placement_requested(tile: GameTile, grid_position: Vector2i) -> void:
 	if Input.is_action_just_pressed("right_click"):
-		if tile.placed_node != null:
-			request_purge(tile)
-		return # Stop processing
-	
-	# Check for Left-Click (Placement)
+		_on_tile_purge_requested(tile, grid_position)
+		return
+
 	if Input.is_action_just_pressed("left_click"):
-		# Check 1: Is the player holding a node to place?
+		# Check placement mode
 		if _current_selected_node_res == null:
-			return # Not in placement mode
+			tile.flash_red()
+			AudioManager.play("fail") # UI sound
+			return
+		# Check empty
+		if tile.has_node:
+			tile.flash_red()
+			AudioManager.play("fail")
+			return
+		# Check affordability
+		if not EconomyManager.can_afford(_current_selected_node_res.base_cost):
+			tile.flash_red()
+			AudioManager.play("fail")
+			return
+		# All clear, place node
+		EconomyManager.spend_resources(_current_selected_node_res.base_cost)
+		tile.set_node(_current_selected_node_res)
+		AudioManager.play("place_node")
+		# Update UI (resource signals will fire)
 
-		# Check 2: Is the tile empty?
-		if tile.placed_node != null:
-			return # Tile is occupied
+# Called by Tile, passes self and grid_position
+func _on_tile_purge_requested(tile: GameTile, grid_position: Vector2i) -> void:
+	# Only allow if a node exists, and not the Main node
+	if not tile.has_node or tile.local_node.node_type.name == "Main":
+		return
+	var node_type = tile.local_node.node_type
+	var refund = EconomyManager.get_sacrifice_refund(node_type)
+	if refund > 0:
+		EconomyManager.gain_resources(refund, "Building")
+	tile.remove_node()
+	AudioManager.play("sacrifice")
+	# AOE Purge: center + 8 neighbors (orthogonal + diagonals)
+	var offsets = [
+		Vector2i(0,0),
+		Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1),
+		Vector2i(1,1), Vector2i(-1,-1), Vector2i(1,-1), Vector2i(-1,1)
+	]
+	for offset in offsets:
+		var pos = grid_position + offset
+		var neighbor = _get_tile_at_position(pos)
+		if neighbor:
+			BlightManager.purge_tile(pos)
+			neighbor.flash_red() # Feedback for now; later: shader effect
 
-		# Check 3: Can we afford it?
-		if EconomyManager.can_afford(_current_selected_node_res.base_cost):
-			# All checks passed!
-			EconomyManager.spend_resources(_current_selected_node_res.base_cost)
-			
-func request_placement() -> void:
-	pass
-	
-func request_purge( tile ) -> void:
-	pass
+# Helper: Get tile at grid position
+func _get_tile_at_position(pos: Vector2i) -> GameTile:
+	for child in GameGrid.get_children():
+		if child.row == pos.x and child.col == pos.y:
+			return child
+	return null
 
-func check_win_condition() -> void:
-	pass
-
-func check_lose_condition() -> void:
-	pass
+# Call this after any resource or node selection change
+func update_affordability():
+	var result := {}
+	var node_names = ["Generator", "Harvester", "Shield", "Sensor", "Synergy", "Conduit", "Purifier"]
+	for s in node_names:
+		var node_type = LevelManager.get_node_type(name) # Assumes you have a way to get this Resource
+		result[name] = EconomyManager.can_afford(node_type.base_cost)
+	emit_signal("affordability_changed", result)

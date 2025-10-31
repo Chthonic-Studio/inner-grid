@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="NodeType" load_steps=2 format=3 uid="uid://brag6wig4el82"]
+
+[ext_resource type="Script" uid="uid://cqkvg2w0mdqsa" path="res://Scripts/Nodes/node_resource.gd" id="1_ocgnk"]
+
+[resource]
+script = ExtResource("1_ocgnk")
+node_name = "Sensor"
+metadata/_custom_type_script = "uid://cqkvg2w0mdqsa"

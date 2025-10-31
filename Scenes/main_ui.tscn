@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://diiwpm6ued0th"]
+[gd_scene load_steps=3 format=3 uid="uid://diiwpm6ued0th"]
 
 [ext_resource type="Script" uid="uid://dju5t3ee1bxua" path="res://Scripts/UI/main_ui.gd" id="1_gmh8u"]
+[ext_resource type="FontFile" uid="uid://d4b2lrofpbeji" path="res://Assets/Fonts/Beholden-Bold.ttf" id="2_kqhp1"]
 
 [node name="MainUI" type="CanvasLayer" node_paths=PackedStringArray("generator_button", "harvester_button", "shield_button", "sensor_button", "synergy_button", "conduit_button", "purifier_button", "blight_clock", "main_resource_label", "build_resource_label")]
 script = ExtResource("1_gmh8u")
@@ -40,35 +41,54 @@ horizontal_alignment = 2
 
 [node name="NodePalette" type="VBoxContainer" parent="."]
 anchors_preset = -1
-anchor_left = 0.0025
-anchor_top = 0.19222222
-anchor_right = 0.131875
-anchor_bottom = 0.8066667
+anchor_top = 0.38944444
+anchor_right = 0.049375
+anchor_bottom = 0.6105555
+offset_left = -1.0
+offset_top = -149.5
+offset_right = -1.0
+offset_bottom = -149.5
+grow_vertical = 2
+size_flags_horizontal = 0
 metadata/_edit_use_anchors_ = true
 
 [node name="Generator" type="Button" parent="NodePalette"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kqhp1")
+text = "Generator"
 
 [node name="Harvester" type="Button" parent="NodePalette"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kqhp1")
+text = "Harvester"
 
 [node name="Shield" type="Button" parent="NodePalette"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kqhp1")
+text = "Shield"
 
 [node name="Sensor" type="Button" parent="NodePalette"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kqhp1")
+text = "Sensor"
 
 [node name="Synergy" type="Button" parent="NodePalette"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kqhp1")
+text = "Synergy"
 
 [node name="Conduit" type="Button" parent="NodePalette"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kqhp1")
+text = "Conduit"
 
 [node name="Purifier" type="Button" parent="NodePalette"]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kqhp1")
+text = "Purifier"
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
-offset_left = 1292.0
+offset_left = 1317.0
 offset_top = 729.0
 offset_right = 1597.0
 offset_bottom = 898.0

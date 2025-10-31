@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="NodeType" load_steps=2 format=3 uid="uid://wuokbma8i104"]
+
+[ext_resource type="Script" uid="uid://cqkvg2w0mdqsa" path="res://Scripts/Nodes/node_resource.gd" id="1_6odc2"]
+
+[resource]
+script = ExtResource("1_6odc2")
+node_name = "Synergy"
+metadata/_custom_type_script = "uid://cqkvg2w0mdqsa"

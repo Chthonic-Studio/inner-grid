@@ -19,12 +19,13 @@ signal node_removed(tile, grid_position)
 @export var blight_value: int = 0
 
 @onready var tile_button = $TileButton
+@onready var tile_texture = $TileTexture
 var local_node : GameNode
 
 func _ready() -> void:
-	tile_button.pressed.connect(_on_tile_button_pressed)
-	pass # Replace with function body.
-
+	# tile_button.pressed.connect(_on_tile_button_pressed)
+	pass
+	
 func setup(row_: int, col_: int, blocked_: bool, blight_resist_: float, dps_: float) -> void:
 	row = row_
 	col = col_
@@ -45,16 +46,14 @@ func setup(row_: int, col_: int, blocked_: bool, blight_resist_: float, dps_: fl
 func tile_blocked() -> void:
 	if tile_button == null:
 		tile_button = $TileButton
+	if tile_texture == null:
+		tile_texture = $TileTexture
 	tile_button.disabled = true
-	var tex = $TileTexture
-	if tex:
-		tex.modulate = Color(0.5,0.5,0.5,1.0)
+	tile_texture.modulate = Color(0.5,0.5,0.5,1.0)
 
 func _on_tile_button_pressed() -> void:
-	# Only process if not blocked
 	if blocked:
 		return
-	# Emit signal for placement request, etc.
 	request_placement.emit(self, Vector2i(row, col))
 
 func on_tile_input( input : InputEvent ) -> void:
@@ -66,9 +65,25 @@ func placement_request() -> void:
 func update_blight( value : int ) -> void:
 	pass 	
 	
-func set_node( node : NodeType ) -> void:
-	pass 	
+func set_node(node_type: NodeType) -> void:
+	if local_node:
+		print("Tile already occupied!")
+		return
+	var node_instance = node_scene.instantiate()
+	node_instance.node_type = node_type
+	add_child(node_instance)
+	local_node = node_instance
+	has_node = true
+	node_placed.emit(self, Vector2i(row, col), node_instance)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+func remove_node() -> void:
+	if local_node:
+		local_node.queue_free()
+		local_node = null
+		has_node = false
+		node_removed.emit(self, Vector2i(row, col))
+
+func flash_red() -> void:
+	tile_texture.modulate = Color(1.0, 0.2, 0.2, 1.0)
+	await get_tree().create_timer(0.18).timeout
+	tile_texture.modulate = Color(1,1,1,1)

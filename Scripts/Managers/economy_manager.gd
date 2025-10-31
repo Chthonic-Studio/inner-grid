@@ -1,5 +1,7 @@
 class_name EconomyManager extends Node
 
+signal resource_changed(main_resource, building_resource)
+
 @export_category("Resources")
 @export var main_resource : int = 0
 @export var building_resource : int = 0
@@ -8,23 +10,39 @@ class_name EconomyManager extends Node
 func _ready() -> void:
 	pass # Replace with function body.
 
-func spend_resources( amount: int, type: String ):
-	if type == "Building":
-		building_resource -= amount
-	if type == "Main":
-		main_resource -= amount
-	else:
-		print("Requesting spend of unrecognized type: ", type)
-	# Emit a signal with the new values
+func spend_resources(node_cost: Dictionary) -> void:
+	if node_cost.has("building"):
+		building_resource -= node_cost["building"]
+	if node_cost.has("main"):
+		main_resource -= node_cost["main"]
+	emit_signal("resource_changed", main_resource, building_resource)
 	LevelManager.emit_signal("income_updated", main_resource, building_resource)
-	MainUI.update_labels(main_resource, building_resource)
 
-func gain_resources( amount: int, type: String ):
+func gain_resources(amount: int, type: String) -> void:
 	if type == "Building":
 		building_resource += amount
-	if type == "Main":
+	elif type == "Main":
 		main_resource += amount
 	else:
 		print("Gaining spend of unrecognized type: ", type)
-	# Emit a signal with the new values
+	emit_signal("resource_changed", main_resource, building_resource)
 	LevelManager.emit_signal("income_updated", main_resource, building_resource)
+
+func can_afford(node_cost: Dictionary) -> bool:
+	if node_cost.has("building") and building_resource < node_cost["building"]:
+		return false
+	if node_cost.has("main") and node_cost["main"] > 0 and main_resource < node_cost["main"]:
+		return false
+	return true
+
+# Runtime building cost (in case of adaptation effects)
+func get_node_building_cost(node_type: NodeType) -> int:
+	# Add adaptation/modifier logic if required
+	return node_type.base_cost.get("building", 0)
+
+func get_sacrifice_refund(node_type: NodeType) -> int:
+	var cost = get_node_building_cost(node_type)
+	var percent = 0.5 # Fetch from adaptation if needed
+	if node_type.has("refund_percent"):
+		percent = node_type.refund_percent
+	return int(round(cost * percent))
