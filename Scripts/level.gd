@@ -72,6 +72,8 @@ func _ready() -> void:
 	
 	for child in GameGrid.get_children():
 		child.request_placement.connect(self._on_tile_placement_requested)
+	
+	LevelManager.income_updated.emit(EconomyManager.main_resource, EconomyManager.building_resource)
 
 # Called by UI when player selects a node type
 func _on_node_selected(node : String):
@@ -89,40 +91,48 @@ func _on_node_selected(node : String):
 		_current_selected_node_res = conduit_node
 	if node == "Purifier":
 		_current_selected_node_res = generator_node
-	
+	print("Selected node: ", _current_selected_node_res)
 
 # Called by Tile, passes self and grid_position
 func _on_tile_placement_requested(tile: GameTile, grid_position: Vector2i) -> void:
-	if Input.is_action_just_pressed("right_click"):
+	print("Tile placement requested")
+	if Input.is_action_just_released("right_click"):
+		print("Requesting purge")
 		_on_tile_purge_requested(tile, grid_position)
 		return
 
-	if Input.is_action_just_pressed("left_click"):
+	if Input.is_action_just_released("left_click"):
+		print("Checking tile setup before placement")
 		# Check placement mode
 		if _current_selected_node_res == null:
 			tile.flash_red()
-			AudioManager.play("fail") # UI sound
+			#AudioManager.play("fail") # UI sound
+			print("Placement failed: No node selected")
 			return
 		# Check empty
 		if tile.has_node:
 			tile.flash_red()
-			AudioManager.play("fail")
+			#AudioManager.play("fail")
+			print("Placement failed: Tile occupied")
 			return
 		# Check affordability
 		if not EconomyManager.can_afford(_current_selected_node_res.placement_cost, _current_selected_node_res.main_resource_placement_cost):
 			tile.flash_red()
-			AudioManager.play("fail")
+			#AudioManager.play("fail")
+			print("Placement failed: Not enough resources")
 			return
 		# All clear, place node
 		EconomyManager.spend_resources(_current_selected_node_res.placement_cost, _current_selected_node_res.main_resource_placement_cost)
 		tile.set_node(_current_selected_node_res)
-		AudioManager.play("place_node")
+		print("Node placed: ", _current_selected_node_res)
+		_current_selected_node_res = null
+		#AudioManager.play("place_node")
 		# Update UI (resource signals will fire)
 
 # Called by Tile, passes self and grid_position
 func _on_tile_purge_requested(tile: GameTile, grid_position: Vector2i) -> void:
 	# Only allow if a node exists, and not the Main node
-	if not tile.has_node or tile.local_node.node_type.name == "Main":
+	if not tile.has_node or tile.local_node.node_type.name == "Core":
 		return
 	var node_type = tile.local_node.node_type
 	var refund = EconomyManager.get_sacrifice_refund(node_type)

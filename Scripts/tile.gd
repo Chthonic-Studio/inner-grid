@@ -86,4 +86,4 @@ func remove_node() -> void:
 func flash_red() -> void:
 	tile_texture.modulate = Color(1.0, 0.2, 0.2, 1.0)
 	await get_tree().create_timer(0.18).timeout
-	tile_texture.modulate = Color(1,1,1,1)
+	tile_texture.modulate = Color(0.5,0.5,0.5,1.0)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://tgyr7hgqhaqn"]
+[gd_scene load_steps=17 format=3 uid="uid://tgyr7hgqhaqn"]
 
 [ext_resource type="PackedScene" uid="uid://wqgmmnqbiwuv" path="res://Scenes/tile.tscn" id="1_tumq0"]
 [ext_resource type="Script" uid="uid://crjsxqm26ndkg" path="res://Scripts/level.gd" id="1_wqkje"]
@@ -14,16 +14,7 @@
 [ext_resource type="Resource" uid="uid://wuokbma8i104" path="res://Scripts/Nodes/synergy.tres" id="9_00k4y"]
 [ext_resource type="Resource" uid="uid://doovcg8u14if1" path="res://Scripts/Nodes/conduit.tres" id="10_3a44l"]
 [ext_resource type="Resource" uid="uid://dwlbdnmicdue1" path="res://Scripts/Nodes/purifier.tres" id="11_0cmrb"]
-[ext_resource type="Shader" uid="uid://duyt8u5vc2guc" path="res://Assets/Shaders/discrete_ocean.gdshader" id="12_c7le1"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2klc5"]
-shader = ExtResource("12_c7le1")
-shader_parameter/bottom_color = Color(0, 0, 0.4509804, 1)
-shader_parameter/top_color = Color(0.2784314, 0, 0, 1)
-shader_parameter/wave_amp = 0.5
-shader_parameter/wave_size = 1.50000002375
-shader_parameter/wave_time_mul = 0.25000000861512
-shader_parameter/total_phases = 12
+[ext_resource type="Material" uid="uid://xrddqtthmiq4" path="res://Assets/waves_bg.tres" id="12_c7le1"]
 
 [sub_resource type="Environment" id="Environment_0f350"]
 glow_enabled = true
@@ -56,7 +47,7 @@ conduit_node = ExtResource("10_3a44l")
 purifier_node = ExtResource("11_0cmrb")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-material = SubResource("ShaderMaterial_2klc5")
+material = ExtResource("12_c7le1")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

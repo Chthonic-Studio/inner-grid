@@ -22,8 +22,8 @@ func _ready() -> void:
 	LevelManager.affordability_changed.connect(_on_affordability_changed)
 
 func update_labels( main_resource: int, build_resource: int) -> void:
-	main_resource_label.text = str(main_resource)
-	build_resource_label.text = str(build_resource)
+	main_resource_label.text = "Main Resource: " + str(main_resource)
+	build_resource_label.text = "Building Resource: " + str(build_resource)
 
 func _on_generator_button_pressed():
 	node_button_clicked = "Generator"

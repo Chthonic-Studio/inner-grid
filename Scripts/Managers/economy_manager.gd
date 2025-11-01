@@ -8,7 +8,7 @@ signal resource_changed(main_resource, building_resource)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	resource_changed.emit()
 
 func spend_resources(node_cost: int, main_cost: int) -> void:
 	building_resource -= node_cost

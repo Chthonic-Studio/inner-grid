@@ -24,26 +24,37 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 
 [node name="BuildResource" type="Label" parent="TopPanel"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kqhp1")
+theme_override_font_sizes/font_size = 25
 text = "Resource Display"
+horizontal_alignment = 1
+uppercase = true
 
 [node name="MainResource" type="Label" parent="TopPanel"]
-custom_minimum_size = Vector2(300, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kqhp1")
+theme_override_font_sizes/font_size = 25
 text = "Resource Display"
+horizontal_alignment = 1
+uppercase = true
 
 [node name="BlightClock" type="Label" parent="TopPanel"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_kqhp1")
+theme_override_font_sizes/font_size = 25
 text = "BlightClock"
-horizontal_alignment = 2
+horizontal_alignment = 1
+uppercase = true
 
 [node name="NodePalette" type="VBoxContainer" parent="."]
 anchors_preset = -1
-anchor_top = 0.38944444
-anchor_right = 0.049375
-anchor_bottom = 0.6105555
+anchor_top = 0.38555557
+anchor_right = 0.07375
+anchor_bottom = 0.61444443
 offset_left = -1.0
 offset_top = -149.5
 offset_right = -1.0
@@ -53,38 +64,52 @@ size_flags_horizontal = 0
 metadata/_edit_use_anchors_ = true
 
 [node name="Generator" type="Button" parent="NodePalette"]
+custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_kqhp1")
+theme_override_font_sizes/font_size = 21
 text = "Generator"
 
 [node name="Harvester" type="Button" parent="NodePalette"]
+custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_kqhp1")
+theme_override_font_sizes/font_size = 21
 text = "Harvester"
 
 [node name="Shield" type="Button" parent="NodePalette"]
+custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_kqhp1")
+theme_override_font_sizes/font_size = 21
 text = "Shield"
 
 [node name="Sensor" type="Button" parent="NodePalette"]
+custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_kqhp1")
+theme_override_font_sizes/font_size = 21
 text = "Sensor"
 
 [node name="Synergy" type="Button" parent="NodePalette"]
+custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_kqhp1")
+theme_override_font_sizes/font_size = 21
 text = "Synergy"
 
 [node name="Conduit" type="Button" parent="NodePalette"]
+custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_kqhp1")
+theme_override_font_sizes/font_size = 21
 text = "Conduit"
 
 [node name="Purifier" type="Button" parent="NodePalette"]
+custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_kqhp1")
+theme_override_font_sizes/font_size = 21
 text = "Purifier"
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
@@ -92,3 +117,11 @@ offset_left = 1317.0
 offset_top = 729.0
 offset_right = 1597.0
 offset_bottom = 898.0
+
+[connection signal="pressed" from="NodePalette/Generator" to="." method="_on_generator_button_pressed"]
+[connection signal="pressed" from="NodePalette/Harvester" to="." method="_on_harvester_button_pressed"]
+[connection signal="pressed" from="NodePalette/Shield" to="." method="_on_shield_button_pressed"]
+[connection signal="pressed" from="NodePalette/Sensor" to="." method="_on_sensor_button_pressed"]
+[connection signal="pressed" from="NodePalette/Synergy" to="." method="_on_synergy_button_pressed"]
+[connection signal="pressed" from="NodePalette/Conduit" to="." method="_on_conduit_button_pressed"]
+[connection signal="pressed" from="NodePalette/Purifier" to="." method="_on_purifier_button_pressed"]
