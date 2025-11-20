@@ -98,8 +98,11 @@ func _ready() -> void:
 	
 	# 6. Initial Calculations
 	recalculate_network()
-	# ADDED: Make sure passives apply on start
 	recalculate_modifiers()
+
+	# 7. SETUP BLIGHT MANAGER (Must be after grid build)
+	BlightManager.setup(self, GameGrid, level_resource)
+	BlightManager.base_damaged.connect(_on_base_damaged)
 
 func _on_global_tick() -> void:
 	for tile in GameGrid.get_children():
@@ -134,10 +137,14 @@ func _on_tile_placement_requested(tile: GameTile, grid_position: Vector2i) -> vo
 			
 		EconomyManager.spend_resources(_current_selected_node_res.placement_cost, _current_selected_node_res.main_resource_placement_cost)
 		tile.set_node(_current_selected_node_res)
+		
+		# --- SHIELD REGISTRATION ---
+		if _current_selected_node_res.node_name == "Shield":
+			BlightManager.register_shield(tile.local_node, grid_position)
+		
 		print("Node placed: ", _current_selected_node_res)
 		
 		recalculate_network()
-		# ADDED: Update Synergy/Sensor buffs when placing nodes
 		recalculate_modifiers()
 		
 		if not Input.is_key_pressed(KEY_SHIFT):
@@ -151,6 +158,11 @@ func _on_tile_purge_requested(tile: GameTile, grid_position: Vector2i) -> void:
 	if refund > 0:
 		EconomyManager.gain_resources(refund, "Building")
 	
+	# --- SHIELD UNREGISTRATION ---
+	# Must happen before remove_node() destroys the instance
+	if node_type.node_name == "Shield":
+		BlightManager.unregister_shield(tile.local_node, grid_position)
+		
 	tile.remove_node()
 	
 	# AOE Purge logic
@@ -166,12 +178,19 @@ func _on_tile_purge_requested(tile: GameTile, grid_position: Vector2i) -> void:
 				BlightManager.purge_tile(pos)
 				neighbor.flash_red()
 
-func _on_node_removed_from_tile(tile, grid_pos):
+func _on_node_removed_from_tile(tile, grid_pos):	
 	recalculate_network()
-	# ADDED: Update Synergy/Sensor buffs when removing nodes
 	recalculate_modifiers()
 
-# --- PASSIVE MODIFIERS (Missing Function Added) ---
+func _on_base_damaged(current_health: int) -> void:
+	print("ALERT: Base is under attack! Health: ", current_health)
+	# Visual feedback: Shake screen or flash red (optional for now)
+		
+	if current_health <= 0:
+		print("GAME OVER: The Core has fallen.")
+		LevelManager.lose() # Ensure LevelManager has this method or just print for now
+		# TimeManager.menu_pause() # Optional: Stop the game
+
 func recalculate_modifiers() -> void:
 	var all_tiles = GameGrid.get_children()
 	
@@ -186,8 +205,6 @@ func recalculate_modifiers() -> void:
 			tile.local_node.current_multiplier = 1.0
 			
 			# IMPORTANT: Hide ALL lines initially.
-			# Recalculate Network will turn network lines back on.
-			# Apply Passives will turn synergy lines back on.
 			tile.local_node.show_connection(Vector2i.UP, false)
 			tile.local_node.show_connection(Vector2i.DOWN, false)
 			tile.local_node.show_connection(Vector2i.LEFT, false)
@@ -209,8 +226,6 @@ func recalculate_network() -> void:
 	for tile in all_tiles:
 		if tile.has_node and tile.local_node:
 			tile.local_node.set_connected_status(false)
-			# Note: We don't hide visuals here because recalculate_modifiers already did it
-			# If we call this independently, we might want to, but for now it's safe.
 
 	# 2. Initialize BFS
 	var open_list = [] 

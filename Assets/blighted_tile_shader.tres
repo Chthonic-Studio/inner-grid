@@ -5,10 +5,10 @@
 
 [resource]
 shader = ExtResource("1_hun68")
-shader_parameter/bottom_color = Color(0.95, 0.057, 0.057, 1)
+shader_parameter/bottom_color = Color(0.94905585, 0.06100855, 0.06100855, 0.8)
 shader_parameter/top_color = Color(0, 0, 0, 0.5)
 shader_parameter/tex = ExtResource("2_pv6n1")
 shader_parameter/layer_count = 2
-shader_parameter/time_scale = 0.2000000095
+shader_parameter/time_scale = 0.3130000148675
 shader_parameter/base_intensity = 1.0
-shader_parameter/size = 0.10001000474975
+shader_parameter/size = 0.43201002051975

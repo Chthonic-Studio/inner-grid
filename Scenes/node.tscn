@@ -13,7 +13,7 @@ region = Rect2(487, 620, 27, 153)
 atlas = ExtResource("1_5g7os")
 region = Rect2(222, -0.35661316, 157, 155.35661)
 
-[node name="Node" type="Button" node_paths=PackedStringArray("up_connection", "right_connection", "left_connection", "down_connection", "logic_timer")]
+[node name="Node" type="Button" node_paths=PackedStringArray("up_connection", "right_connection", "left_connection", "down_connection")]
 custom_minimum_size = Vector2(80, 80)
 anchors_preset = -1
 anchor_right = 0.04875
@@ -28,7 +28,6 @@ up_connection = NodePath("TileContent/ConnectionVFX/Up")
 right_connection = NodePath("TileContent/ConnectionVFX/Right")
 left_connection = NodePath("TileContent/ConnectionVFX/Left")
 down_connection = NodePath("TileContent/ConnectionVFX/Down")
-logic_timer = NodePath("LogicTimer")
 metadata/_edit_use_anchors_ = true
 
 [node name="TileContent" type="Control" parent="."]

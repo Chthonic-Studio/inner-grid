@@ -50,7 +50,9 @@ func set_connected_status(status: bool) -> void:
 			active_behavior.on_network_update(connected)
 		update_visuals()
 
+# Called by BlightManager
 func apply_blight_damage( dmg: int ) -> void:
+	# 1. Absorb with Shield
 	if current_shield > 0:
 		if current_shield >= dmg:
 			current_shield -= dmg
@@ -59,14 +61,27 @@ func apply_blight_damage( dmg: int ) -> void:
 			dmg -= current_shield
 			current_shield = 0
 			
+	# 2. Apply to Health
 	if dmg > 0:
 		current_health -= dmg
 		if current_health <= 0:
 			destroy_node()
+	
+	# Visual feedback could be triggered here (flash, shake, etc)
 
 func destroy_node() -> void:
+	# We call specific logic on the Tile via the Level/Manager flow usually,
+	# but here we are the child. We emit signal so Tile can handle cleanup.
 	node_destroyed.emit()
-	queue_free()
+	
+	# IMPORTANT: We need to tell the tile to unreference us.
+	# Usually Tile.remove_node() handles this, but if we die from damage,
+	# we are initiating the death.
+	var parent = get_parent()
+	if parent and parent.has_method("remove_node"):
+		parent.remove_node()
+	else:
+		queue_free()
 
 func update_visuals() -> void:
 	# Default state: Lines hidden
