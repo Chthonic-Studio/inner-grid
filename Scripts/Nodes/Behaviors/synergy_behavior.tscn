@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://djulbolcl6vfy"]
+
+[ext_resource type="Script" uid="uid://fbm1tuoriegv" path="res://Scripts/Nodes/Behaviors/synergy_behavior.gd" id="1_jvdc4"]
+
+[node name="SynergyBehavior" type="Node"]
+script = ExtResource("1_jvdc4")

@@ -102,7 +102,7 @@ func _ready() -> void:
 func _on_global_tick() -> void:
 	for tile in GameGrid.get_children():
 		if tile.has_node and tile.local_node:
-			tile.local_node.on_global_tick(EconomyManager)
+			tile.local_node.on_global_tick(self)
 
 func _on_node_selected(node : String):
 	if node == "Generator": _current_selected_node_res = generator_node

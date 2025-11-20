@@ -14,8 +14,6 @@ signal node_destroyed
 @export var current_shield: int = 0
 @export var connected: bool = false
 @export var current_multiplier: float = 1.0 
-
-# Fix: Explicitly define the variable that caused the earlier assignment error
 var grid_position: Vector2i
 
 var active_behavior : NodeBehavior
@@ -33,9 +31,13 @@ func _ready() -> void:
 	
 	update_visuals()
 
-func on_global_tick(economy: EconomyManager) -> void:
+func on_global_tick(level: Level) -> void:
 	if active_behavior:
-		active_behavior.perform_tick(economy)
+		active_behavior.perform_tick(level)
+
+func apply_passives(level: Level, tile: GameTile) -> void:
+	if active_behavior:
+		active_behavior.apply_passives(level, tile)
 
 func set_connected_status(status: bool) -> void:
 	if connected != status:
@@ -63,13 +65,15 @@ func destroy_node() -> void:
 	queue_free()
 
 func update_visuals() -> void:
+	# Default state: Lines hidden
 	up_connection.visible = false
 	down_connection.visible = false
 	left_connection.visible = false
 	right_connection.visible = false
 	
-	if not connected:
-		modulate = Color(0.5, 0.5, 0.5)
+	# LOGIC UPDATE: Only dim if the node actually REQUIRES a network connection
+	if node_type.requires_network_connection and not connected:
+		modulate = Color(0.5, 0.5, 0.5) # Dim effect
 	else:
 		modulate = Color.WHITE
 

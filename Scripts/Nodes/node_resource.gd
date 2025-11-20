@@ -12,6 +12,7 @@ class_name NodeType extends Resource
 @export_category("Behavior")
 @export var behavior_scene : PackedScene 
 @export var base_output : int = 0
+@export var requires_network_connection : bool = true
 
 @export_category("Node Costs")
 @export var placement_cost : int

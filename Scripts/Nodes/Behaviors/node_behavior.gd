@@ -11,8 +11,11 @@ func setup(parent: GameNode, resource_data: NodeType) -> void:
 func _on_setup() -> void:
 	pass
 
-func perform_tick(economy: EconomyManager) -> void:
+func perform_tick(level: Level) -> void:
 	pass
 
 func on_network_update(is_connected: bool) -> void:
+	pass
+
+func apply_passives(level: Level, current_tile: GameTile) -> void:
 	pass

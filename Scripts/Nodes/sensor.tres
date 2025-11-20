@@ -1,8 +1,11 @@
-[gd_resource type="Resource" script_class="NodeType" load_steps=2 format=3 uid="uid://brag6wig4el82"]
+[gd_resource type="Resource" script_class="NodeType" load_steps=3 format=3 uid="uid://brag6wig4el82"]
 
 [ext_resource type="Script" uid="uid://cqkvg2w0mdqsa" path="res://Scripts/Nodes/node_resource.gd" id="1_ocgnk"]
+[ext_resource type="PackedScene" uid="uid://gxle55o43rgk" path="res://Scripts/Nodes/Behaviors/sensor_behavior.tscn" id="1_tcpl5"]
 
 [resource]
 script = ExtResource("1_ocgnk")
 node_name = "Sensor"
+behavior_scene = ExtResource("1_tcpl5")
+requires_network_connection = false
 metadata/_custom_type_script = "uid://cqkvg2w0mdqsa"
