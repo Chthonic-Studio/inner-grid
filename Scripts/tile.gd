@@ -23,7 +23,6 @@ signal node_removed(tile, grid_position)
 var local_node : GameNode
 
 func _ready() -> void:
-	# tile_button.pressed.connect(_on_tile_button_pressed)
 	pass
 	
 func setup(row_: int, col_: int, blocked_: bool, blight_resist_: float, dps_: float) -> void:
@@ -36,11 +35,9 @@ func setup(row_: int, col_: int, blocked_: bool, blight_resist_: float, dps_: fl
 
 	if blocked:
 		tile_blocked()
-		# Optionally, disable visuals/interactivity here
 	else:
 		if tile_button == null:
 			tile_button = $TileButton
-		# Connect input signals as needed for active tiles
 		tile_button.pressed.connect(_on_tile_button_pressed)
 
 func tile_blocked() -> void:
@@ -54,7 +51,8 @@ func tile_blocked() -> void:
 func _on_tile_button_pressed() -> void:
 	if blocked:
 		return
-	request_placement.emit(self, Vector2i(row, col))
+	# FIX: Send (col, row) instead of (row, col) to match standard X/Y axes
+	request_placement.emit(self, Vector2i(col, row))
 
 func on_tile_input( input : InputEvent ) -> void:
 	pass
@@ -71,17 +69,23 @@ func set_node(node_type: NodeType) -> void:
 		return
 	var node_instance = node_scene.instantiate()
 	node_instance.node_type = node_type
+	
+	# FIX: Assign grid_position as (col, row)
+	node_instance.grid_position = Vector2i(col, row)
+	
 	add_child(node_instance)
 	local_node = node_instance
 	has_node = true
-	node_placed.emit(self, Vector2i(row, col), node_instance)
+	# FIX: Emit (col, row)
+	node_placed.emit(self, Vector2i(col, row), node_instance)
 
 func remove_node() -> void:
 	if local_node:
 		local_node.queue_free()
 		local_node = null
 		has_node = false
-		node_removed.emit(self, Vector2i(row, col))
+		# FIX: Emit (col, row)
+		node_removed.emit(self, Vector2i(col, row))
 
 func flash_red() -> void:
 	tile_texture.modulate = Color(1.0, 0.2, 0.2, 1.0)

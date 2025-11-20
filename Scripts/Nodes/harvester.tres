@@ -1,8 +1,11 @@
-[gd_resource type="Resource" script_class="NodeType" load_steps=2 format=3 uid="uid://d4ank6ws6r3yi"]
+[gd_resource type="Resource" script_class="NodeType" load_steps=3 format=3 uid="uid://d4ank6ws6r3yi"]
 
+[ext_resource type="PackedScene" uid="uid://cc1xttde77asu" path="res://Scripts/Nodes/Behaviors/harvester_behavior.tscn" id="1_1q1it"]
 [ext_resource type="Script" uid="uid://cqkvg2w0mdqsa" path="res://Scripts/Nodes/node_resource.gd" id="1_r5nss"]
 
 [resource]
 script = ExtResource("1_r5nss")
 node_name = "Harvester"
+behavior_scene = ExtResource("1_1q1it")
+base_output = 5
 metadata/_custom_type_script = "uid://cqkvg2w0mdqsa"

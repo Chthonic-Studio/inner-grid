@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cc1xttde77asu"]
+
+[ext_resource type="Script" uid="uid://dr13touomug5y" path="res://Scripts/Nodes/Behaviors/harvester_behavior.gd" id="1_6il2m"]
+
+[node name="HarvesterBehavior" type="Node"]
+script = ExtResource("1_6il2m")

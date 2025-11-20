@@ -25,6 +25,8 @@ func gain_resources(amount: int, type: String) -> void:
 		print("Gaining spend of unrecognized type: ", type)
 	emit_signal("resource_changed", main_resource, building_resource)
 	LevelManager.emit_signal("income_updated", main_resource, building_resource)
+	if main_resource == LevelManager.current_win_condition:
+		LevelManager.win()
 
 func can_afford(node_cost: int, main_cost:int) -> bool:
 	if building_resource < node_cost:

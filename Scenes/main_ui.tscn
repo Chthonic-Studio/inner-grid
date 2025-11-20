@@ -112,11 +112,53 @@ theme_override_fonts/font = ExtResource("2_kqhp1")
 theme_override_font_sizes/font_size = 21
 text = "Purifier"
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
-offset_left = 1317.0
-offset_top = 729.0
-offset_right = 1597.0
-offset_bottom = 898.0
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 457.0
+offset_top = 116.0
+offset_right = 1076.0
+offset_bottom = 881.0
+mouse_filter = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Control"]
+visible = false
+clip_contents = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -154.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="Control/PanelContainer"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Player Voice"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="PanelContainer2" type="PanelContainer" parent="Control"]
+visible = false
+clip_contents = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 135.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="Control/PanelContainer2"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Death Voice"
+horizontal_alignment = 1
+autowrap_mode = 3
 
 [connection signal="pressed" from="NodePalette/Generator" to="." method="_on_generator_button_pressed"]
 [connection signal="pressed" from="NodePalette/Harvester" to="." method="_on_harvester_button_pressed"]

@@ -1,8 +1,12 @@
-[gd_resource type="Resource" script_class="NodeType" load_steps=2 format=3 uid="uid://doovcg8u14if1"]
+[gd_resource type="Resource" script_class="NodeType" load_steps=3 format=3 uid="uid://doovcg8u14if1"]
 
 [ext_resource type="Script" uid="uid://cqkvg2w0mdqsa" path="res://Scripts/Nodes/node_resource.gd" id="1_l5ikx"]
+[ext_resource type="PackedScene" uid="uid://dxwvkd6ml5e87" path="res://Scripts/Nodes/Behaviors/conduit_behavior.tscn" id="1_lxtpo"]
 
 [resource]
 script = ExtResource("1_l5ikx")
 node_name = "Conduit"
+node_health = 20
+node_shield = 50
+behavior_scene = ExtResource("1_lxtpo")
 metadata/_custom_type_script = "uid://cqkvg2w0mdqsa"

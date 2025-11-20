@@ -1,4 +1,4 @@
-class_name GameNode extends Node
+class_name GameNode extends Button
 
 signal node_destroyed
 
@@ -8,34 +8,73 @@ signal node_destroyed
 @export var right_connection: NinePatchRect
 @export var left_connection: NinePatchRect
 @export var down_connection: NinePatchRect
-@export var logic_timer: Timer
 
 @export_category("Node Stats")
 @export var current_health: int = 100
-@export var connected: bool
-@export var synergy_buff: float = 0.0
+@export var current_shield: int = 0
+@export var connected: bool = false
+@export var current_multiplier: float = 1.0 
 
-@export_category("Synergies")
-@export var synergy_up: bool
-@export var synergy_right: bool
-@export var synergy_left: bool
-@export var synergy_down: bool
+# Fix: Explicitly define the variable that caused the earlier assignment error
+var grid_position: Vector2i
+
+var active_behavior : NodeBehavior
 
 func _ready() -> void:
-	logic_timer.start(node_type.function_timer)
+	if node_type:
+		current_health = node_type.node_health
+		current_shield = node_type.node_shield
+		
+		if node_type.behavior_scene:
+			var behavior_instance = node_type.behavior_scene.instantiate()
+			add_child(behavior_instance)
+			active_behavior = behavior_instance as NodeBehavior
+			active_behavior.setup(self, node_type)
+	
+	update_visuals()
 
+func on_global_tick(economy: EconomyManager) -> void:
+	if active_behavior:
+		active_behavior.perform_tick(economy)
 
-func _on_logic_timer_timeout() -> void:
-	node_type.calculate_output()
+func set_connected_status(status: bool) -> void:
+	if connected != status:
+		connected = status
+		if active_behavior:
+			active_behavior.on_network_update(connected)
+		update_visuals()
 
 func apply_blight_damage( dmg: int ) -> void:
-	current_health -= dmg
-	if current_health <= 0:
-		destroy_node()
-
-func update_connection( _location ) -> void:
-	pass
+	if current_shield > 0:
+		if current_shield >= dmg:
+			current_shield -= dmg
+			dmg = 0
+		else:
+			dmg -= current_shield
+			current_shield = 0
+			
+	if dmg > 0:
+		current_health -= dmg
+		if current_health <= 0:
+			destroy_node()
 
 func destroy_node() -> void:
 	node_destroyed.emit()
 	queue_free()
+
+func update_visuals() -> void:
+	up_connection.visible = false
+	down_connection.visible = false
+	left_connection.visible = false
+	right_connection.visible = false
+	
+	if not connected:
+		modulate = Color(0.5, 0.5, 0.5)
+	else:
+		modulate = Color.WHITE
+
+func show_connection(direction: Vector2i, active: bool) -> void:
+	if direction == Vector2i.UP: up_connection.visible = active
+	elif direction == Vector2i.DOWN: down_connection.visible = active
+	elif direction == Vector2i.LEFT: left_connection.visible = active
+	elif direction == Vector2i.RIGHT: right_connection.visible = active

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dxwvkd6ml5e87"]
+
+[ext_resource type="Script" uid="uid://wcff5fbwa3qd" path="res://Scripts/Nodes/Behaviors/conduit_behavior.gd" id="1_q8cyx"]
+
+[node name="ConduitBehavior" type="Node"]
+script = ExtResource("1_q8cyx")

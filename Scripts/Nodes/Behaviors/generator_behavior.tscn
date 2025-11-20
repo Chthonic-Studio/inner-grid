@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://drtrkh4q8f0gk"]
+
+[ext_resource type="Script" uid="uid://b2ut8ofk47or6" path="res://Scripts/Nodes/Behaviors/generator_behavior.gd" id="1_4lxhw"]
+
+[node name="GeneratorBehavior" type="Node"]
+script = ExtResource("1_4lxhw")

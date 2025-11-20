@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://wqgmmnqbiwuv"]
+[gd_scene load_steps=6 format=3 uid="uid://wqgmmnqbiwuv"]
 
 [ext_resource type="Script" uid="uid://cv4uad2dvlt4y" path="res://Scripts/tile.gd" id="1_rvq8p"]
 [ext_resource type="Texture2D" uid="uid://cp2vdrbn2mrln" path="res://Assets/Spritesheet.png" id="1_xsjyq"]
 [ext_resource type="PackedScene" uid="uid://dgbojfandfkki" path="res://Scenes/node.tscn" id="2_4kj4d"]
+[ext_resource type="Material" uid="uid://cdx0oq3an3rem" path="res://Assets/blighted_tile_shader.tres" id="3_khers"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xsjyq"]
 atlas = ExtResource("1_xsjyq")
@@ -24,6 +25,7 @@ node_scene = ExtResource("2_4kj4d")
 [node name="TileTexture" type="TextureRect" parent="."]
 modulate = Color(1, 1, 1, 0.7058824)
 self_modulate = Color(1, 1, 1, 0.7058824)
+material = ExtResource("3_khers")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

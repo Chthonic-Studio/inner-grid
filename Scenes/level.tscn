@@ -18,6 +18,7 @@
 
 [sub_resource type="Environment" id="Environment_0f350"]
 glow_enabled = true
+glow_bloom = 0.5
 fog_enabled = true
 
 [node name="Level" type="Control" node_paths=PackedStringArray("EconomyManager", "BlightManager", "NarrativeManager", "GameViewport", "GameGrid")]
@@ -46,7 +47,7 @@ synergy_node = ExtResource("9_00k4y")
 conduit_node = ExtResource("10_3a44l")
 purifier_node = ExtResource("11_0cmrb")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="LevelBG" type="ColorRect" parent="."]
 material = ExtResource("12_c7le1")
 layout_mode = 1
 anchors_preset = 15
@@ -575,3 +576,5 @@ layout_mode = 2
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0f350")
+
+[node name="BlightTimer" type="Timer" parent="."]
