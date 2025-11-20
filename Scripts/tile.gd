@@ -18,7 +18,7 @@ signal node_removed(tile, grid_position)
 @export var has_node : bool
 @export var has_blight: bool # True if blight > 0
 @export var is_fully_blighted: bool = false # True if reached max
-@export var blight_value: float = 0.0 # Changed to float for granular resistance math
+@export var blight_value: float = 0.0 
 
 const MAX_BLIGHT_VALUE = 100.0
 
@@ -27,7 +27,15 @@ const MAX_BLIGHT_VALUE = 100.0
 var local_node : GameNode
 
 func _ready() -> void:
-	pass
+	# CRITICAL FIX: Create a unique material instance for this tile
+	# This allows us to change shader parameters (like intensity) without affecting other tiles
+	if tile_texture and tile_texture.material:
+		tile_texture.material = tile_texture.material.duplicate()
+		
+		# Initialize shader to "invisible" state (intensity 0)
+		(tile_texture.material as ShaderMaterial).set_shader_parameter("base_intensity", 0.0)
+		
+		# NOTE: We removed the color overrides here to use the default Red from the resource
 	
 func setup(row_: int, col_: int, blocked_: bool, blight_resist_: float, dps_: float) -> void:
 	row = row_
@@ -57,7 +65,6 @@ func tile_blocked() -> void:
 func _on_tile_button_pressed() -> void:
 	if blocked:
 		return
-	# FIX: Send (col, row) instead of (row, col) to match standard X/Y axes
 	request_placement.emit(self, Vector2i(col, row))
 
 func on_tile_input( input : InputEvent ) -> void:
@@ -104,14 +111,11 @@ func set_node(node_type: NodeType) -> void:
 		return
 	var node_instance = node_scene.instantiate()
 	node_instance.node_type = node_type
-	
-	# FIX: Assign grid_position as (col, row)
 	node_instance.grid_position = Vector2i(col, row)
 	
 	add_child(node_instance)
 	local_node = node_instance
 	has_node = true
-	# FIX: Emit (col, row)
 	node_placed.emit(self, Vector2i(col, row), node_instance)
 
 func remove_node() -> void:
@@ -119,7 +123,6 @@ func remove_node() -> void:
 		local_node.queue_free()
 		local_node = null
 		has_node = false
-		# FIX: Emit (col, row)
 		node_removed.emit(self, Vector2i(col, row))
 
 func flash_red() -> void:
@@ -130,13 +133,53 @@ func flash_red() -> void:
 func update_visuals() -> void:
 	if tile_texture == null:
 		tile_texture = $TileTexture
+	
 	if blocked:
 		tile_texture.modulate = Color(0.2, 0.2, 0.2, 1.0)
-	elif is_fully_blighted:
-		tile_texture.modulate = Color(0.2, 0.0, 0.3, 1.0) # Deep purple for full blight
-	elif has_blight:
-		# Gradient from White to Purple based on blight value
+		if tile_texture.material:
+			(tile_texture.material as ShaderMaterial).set_shader_parameter("base_intensity", 0.0)
+		return
+
+	# --- SHADER LOGIC ---
+	if tile_texture.material is ShaderMaterial:
+		var mat = tile_texture.material as ShaderMaterial
 		var ratio = blight_value / MAX_BLIGHT_VALUE
-		tile_texture.modulate = Color.WHITE.lerp(Color(0.5, 0.0, 0.5, 1.0), ratio)
+		
+		# Piecewise Linear Interpolation based on requests
+		var target_time_scale : float
+		var target_layer_count : int
+		var target_size : float
+		
+		if ratio <= 0.5:
+			# Range 0% -> 50%
+			var t = ratio / 0.5
+			# Time Scale: 0.006 -> 0.2
+			target_time_scale = lerpf(0.006, 0.2, t)
+			# Layer Count: 2 -> 8
+			target_layer_count = int(lerpf(2.0, 8.0, t))
+			# Size: 1.0 -> 0.25
+			target_size = lerpf(1.0, 0.25, t)
+		else:
+			# Range 50% -> 100%
+			var t = (ratio - 0.5) / 0.5
+			# Time Scale: 0.2 -> 0.45
+			target_time_scale = lerpf(0.2, 0.45, t)
+			# Layer Count: 8 -> 16
+			target_layer_count = int(lerpf(8.0, 16.0, t))
+			# Size: 0.25 -> 0.1
+			target_size = lerpf(0.25, 0.1, t)
+		
+		mat.set_shader_parameter("time_scale", target_time_scale)
+		mat.set_shader_parameter("layer_count", target_layer_count)
+		mat.set_shader_parameter("size", target_size)
+		
+		# Ensure visibility ramps up quickly so the effect is seen immediately when blight starts
+		# We cap it at 1.0 (base_intensity default)
+		var intensity = clamp(ratio * 5.0, 0.0, 1.0)
+		mat.set_shader_parameter("base_intensity", intensity)
+	
+	# --- MODULATE LOGIC ---
+	if is_fully_blighted:
+		tile_texture.modulate = Color(0.8, 0.8, 0.8, 1.0)
 	else:
-		tile_texture.modulate = Color(1, 1, 1, 0.7)
+		tile_texture.modulate = Color(1, 1, 1, 0.7) 
