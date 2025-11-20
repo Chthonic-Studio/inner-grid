@@ -27,7 +27,11 @@ func _ready() -> void:
 			var behavior_instance = node_type.behavior_scene.instantiate()
 			add_child(behavior_instance)
 			active_behavior = behavior_instance as NodeBehavior
-			active_behavior.setup(self, node_type)
+			
+			if active_behavior:
+				active_behavior.setup(self, node_type)
+			else:
+				printerr("ERROR: Behavior Scene for ", node_type.node_name, " does not have a NodeBehavior script attached!")
 	
 	update_visuals()
 

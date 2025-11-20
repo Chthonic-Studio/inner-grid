@@ -96,8 +96,10 @@ func _ready() -> void:
 	
 	LevelManager.income_updated.emit(EconomyManager.main_resource, EconomyManager.building_resource)
 	
-	# 6. Initial Network Calc
+	# 6. Initial Calculations
 	recalculate_network()
+	# ADDED: Make sure passives apply on start
+	recalculate_modifiers()
 
 func _on_global_tick() -> void:
 	for tile in GameGrid.get_children():
@@ -135,12 +137,14 @@ func _on_tile_placement_requested(tile: GameTile, grid_position: Vector2i) -> vo
 		print("Node placed: ", _current_selected_node_res)
 		
 		recalculate_network()
+		# ADDED: Update Synergy/Sensor buffs when placing nodes
+		recalculate_modifiers()
 		
 		if not Input.is_key_pressed(KEY_SHIFT):
 			_current_selected_node_res = null
 
 func _on_tile_purge_requested(tile: GameTile, grid_position: Vector2i) -> void:
-	if not tile.has_node or tile.local_node.node_type.name == "Core":
+	if not tile.has_node or tile.local_node.node_type.node_name == "Core":
 		return
 	var node_type = tile.local_node.node_type
 	var refund = EconomyManager.get_sacrifice_refund(node_type)
@@ -149,7 +153,7 @@ func _on_tile_purge_requested(tile: GameTile, grid_position: Vector2i) -> void:
 	
 	tile.remove_node()
 	
-	# AOE Purge logic - offsets are still valid for (col, row)
+	# AOE Purge logic
 	var offsets = [
 		Vector2i(0,0), Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1),
 		Vector2i(1,1), Vector2i(-1,-1), Vector2i(1,-1), Vector2i(-1,1)
@@ -164,6 +168,38 @@ func _on_tile_purge_requested(tile: GameTile, grid_position: Vector2i) -> void:
 
 func _on_node_removed_from_tile(tile, grid_pos):
 	recalculate_network()
+	# ADDED: Update Synergy/Sensor buffs when removing nodes
+	recalculate_modifiers()
+
+# --- PASSIVE MODIFIERS (Missing Function Added) ---
+func recalculate_modifiers() -> void:
+	var all_tiles = GameGrid.get_children()
+	
+	# 1. Reset all Modifiers to Base
+	for tile in all_tiles:
+		var pos = Vector2i(tile.col, tile.row)
+		# Reset Tile Resistance
+		tile.blight_resistance = level_resource.tile_blight_resistance.get(pos, 0.0)
+		
+		# Reset Node Multiplier
+		if tile.has_node and tile.local_node:
+			tile.local_node.current_multiplier = 1.0
+			
+			# IMPORTANT: Hide ALL lines initially.
+			# Recalculate Network will turn network lines back on.
+			# Apply Passives will turn synergy lines back on.
+			tile.local_node.show_connection(Vector2i.UP, false)
+			tile.local_node.show_connection(Vector2i.DOWN, false)
+			tile.local_node.show_connection(Vector2i.LEFT, false)
+			tile.local_node.show_connection(Vector2i.RIGHT, false)
+	
+	# 2. Re-calculate network (this turns network lines back on)
+	recalculate_network()
+
+	# 3. Apply Active Passives (Synergy/Sensors turn their specific lines on)
+	for tile in all_tiles:
+		if tile.has_node and tile.local_node:
+			tile.local_node.apply_passives(self, tile)
 
 # --- NETWORK LOGIC ---
 func recalculate_network() -> void:
@@ -173,7 +209,8 @@ func recalculate_network() -> void:
 	for tile in all_tiles:
 		if tile.has_node and tile.local_node:
 			tile.local_node.set_connected_status(false)
-			tile.local_node.update_visuals()
+			# Note: We don't hide visuals here because recalculate_modifiers already did it
+			# If we call this independently, we might want to, but for now it's safe.
 
 	# 2. Initialize BFS
 	var open_list = [] 
@@ -183,7 +220,6 @@ func recalculate_network() -> void:
 	for tile in all_tiles:
 		if tile.has_node and tile.local_node.node_type.node_name == "Core":
 			tile.local_node.set_connected_status(true)
-			# FIX: Use (col, row)
 			var pos = Vector2i(tile.col, tile.row)
 			open_list.append(pos)
 			visited[pos] = true
@@ -193,8 +229,6 @@ func recalculate_network() -> void:
 		var current_pos = open_list.pop_front()
 		var current_tile = _get_tile_at_position(current_pos)
 		
-		# These constants now correctly correspond to (x=col, y=row)
-		# UP=(0,-1) -> Row-1 (Up). RIGHT=(1,0) -> Col+1 (Right).
 		var directions = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]
 		
 		for dir in directions:
@@ -214,7 +248,7 @@ func recalculate_network() -> void:
 			if current_is_conductor:
 				neighbor_node.set_connected_status(true)
 				
-				# Visuals: Now align with Vector constants
+				# Visuals
 				current_tile.local_node.show_connection(dir, true)
 				neighbor_node.show_connection(-dir, true)
 				
@@ -223,16 +257,12 @@ func recalculate_network() -> void:
 					open_list.append(neighbor_pos)
 
 func _get_tile_at_position(pos: Vector2i) -> GameTile:
-	# FIX: Calc index based on Row-Major order 1D array (GridContainer structure)
-	# Index = Row * Width + Col.
-	# Since pos is (x=Col, y=Row):
 	var index = pos.y * GRID_COLS + pos.x
 	if index >= 0 and index < GameGrid.get_child_count():
 		return GameGrid.get_child(index)
 	return null
 
 func _is_valid_pos(pos: Vector2i) -> bool:
-	# FIX: Check x against COLS, y against ROWS
 	return pos.x >= 0 and pos.x < GRID_COLS and pos.y >= 0 and pos.y < GRID_ROWS
 
 func update_affordability():
