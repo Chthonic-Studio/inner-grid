@@ -1,42 +1,39 @@
-// Attach to a ColorRect in front of texture/background
-
 shader_type canvas_item;
+render_mode blend_add; // Additive blending ensures ripples stack like light, not paint
 
-// Handles the concentric ripples
-uniform float frequency: hint_range(0, 15, 0.01) = 4.0;
-uniform float amplitude: hint_range(0, 3, 0.1) = 2.0;
-uniform float ripple_rate : hint_range(0, 20.0, 1) = 5;
-
-// Handles the waves themselves
-uniform float wave_amplitude: hint_range(0.001, 0.1, 0.001) = 0.05;
-uniform float wave_frequency: hint_range(0, 15, 0.01) = 4.0;
-
-uniform sampler2D noise;
-
-uniform sampler2D SCREEN_TEXTURE: hint_screen_texture, filter_linear_mipmap;
-
-vec2 wave(vec2 uv, float time) {
-    return vec2(
-        uv.x + sin(uv.y * wave_frequency + time) * wave_amplitude,
-        uv.y + sin(uv.x * wave_frequency + time) * wave_amplitude
-    );
-}
+uniform float frequency: hint_range(0, 20, 0.01) = 8.0;
+uniform float ripple_rate : hint_range(0, 20.0, 1) = 3.0;
+uniform vec4 tint_color : source_color = vec4(1.0, 0.9, 0.0, 0.5);
 
 void fragment() {
-	vec2 center_position = -1.0 + 2.0 * UV / (1.0 / TEXTURE_PIXEL_SIZE);
-	float center_distance = length(center_position);
-	
-	float ripple = sin(center_distance * -frequency * PI + ripple_rate * TIME) * amplitude / (center_distance + 1.0);
-	
-	vec2 uv = FRAGCOORD.xy / (1.0 / SCREEN_PIXEL_SIZE).xy + (center_position/center_distance) * ripple * wave_amplitude;
-    vec2 background_wave = wave(uv, TIME);
-	vec4 background_texture = texture(SCREEN_TEXTURE,background_wave) * sqrt(amplitude);
+	// Center coordinates (-1 to 1)
+	vec2 center_position = UV * 2.0 - 1.0;
+	float dist = length(center_position);
 
-	float alpha_scalar = (1.0 - min(center_distance, 1.0)) * background_texture.x * 2.5; 
-	
-	background_texture.a *= 1.0 * alpha_scalar * (ripple + background_texture.x * background_texture.y);
-	background_texture.a = max(background_texture.a - (background_texture.y * 0.45), 0.0);
-	
-	COLOR = vec4(background_texture.xyz, background_texture.a);
+	// 1. Calculate Ripple Wave
+	// Using sin() to create concentric bands
+	float ripple_raw = sin(dist * -frequency * 3.14159 + TIME * ripple_rate);
 
+	// 2. Sharpen the Wave
+	// Power function makes the peaks thin and the valleys wide/transparent
+	// max(0.0, ...) ensures we only draw the "positive" rings
+	float ripple_sharp = pow(max(0.0, ripple_raw), 6.0);
+
+	// 3. Attenuation (Fade out)
+	// Box fade: Soften edges near the limit of the 3x3 square
+	float box_edge = max(abs(center_position.x), abs(center_position.y));
+	float edge_fade = 1.0 - smoothstep(0.7, 1.0, box_edge);
+
+	// Center fade: Make the ripple slightly stronger near the source
+	float center_strength = 1.0 / (0.5 + dist * 1.5);
+
+	// 4. Final Color
+	// RGB is just the tint
+	vec3 final_color = tint_color.rgb;
+
+	// Alpha controls visibility.
+	// Where ripple_sharp is 0 (between rings), alpha is 0, showing the game below perfectly.
+	float final_alpha = ripple_sharp * center_strength * edge_fade * tint_color.a;
+
+	COLOR = vec4(final_color, final_alpha);
 }

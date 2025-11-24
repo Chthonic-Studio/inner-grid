@@ -26,6 +26,8 @@ const MAX_BLIGHT_VALUE = 100.0
 @onready var tile_texture = $TileTexture
 var local_node : GameNode
 
+var _visual_tween : Tween
+
 func _ready() -> void:
 	# CRITICAL FIX: Create a unique material instance for this tile
 	# This allows us to change shader parameters (like intensity) without affecting other tiles
@@ -52,7 +54,8 @@ func setup(row_: int, col_: int, blocked_: bool, blight_resist_: float, dps_: fl
 			tile_button = $TileButton
 		tile_button.pressed.connect(_on_tile_button_pressed)
 	
-	update_visuals()
+	# Force immediate update on setup, no tween
+	update_visuals(true)
 
 func tile_blocked() -> void:
 	if tile_button == null:
@@ -130,7 +133,7 @@ func flash_red() -> void:
 	await get_tree().create_timer(0.18).timeout
 	update_visuals()
 
-func update_visuals() -> void:
+func update_visuals(immediate: bool = false) -> void:
 	if tile_texture == null:
 		tile_texture = $TileTexture
 	
@@ -169,14 +172,31 @@ func update_visuals() -> void:
 			# Size: 0.25 -> 0.1
 			target_size = lerpf(0.25, 0.1, t)
 		
-		mat.set_shader_parameter("time_scale", target_time_scale)
-		mat.set_shader_parameter("layer_count", target_layer_count)
-		mat.set_shader_parameter("size", target_size)
+		var target_intensity = clamp(ratio * 5.0, 0.0, 1.0)
 		
-		# Ensure visibility ramps up quickly so the effect is seen immediately when blight starts
-		# We cap it at 1.0 (base_intensity default)
-		var intensity = clamp(ratio * 5.0, 0.0, 1.0)
-		mat.set_shader_parameter("base_intensity", intensity)
+		if immediate:
+			mat.set_shader_parameter("time_scale", target_time_scale)
+			mat.set_shader_parameter("layer_count", target_layer_count)
+			mat.set_shader_parameter("size", target_size)
+			mat.set_shader_parameter("base_intensity", target_intensity)
+		else:
+			# Kill previous tween if active
+			if _visual_tween and _visual_tween.is_valid():
+				_visual_tween.kill()
+			
+			_visual_tween = create_tween()
+			_visual_tween.set_parallel(true)
+			_visual_tween.tween_method(func(v): mat.set_shader_parameter("time_scale", v), 
+				mat.get_shader_parameter("time_scale"), target_time_scale, 0.5)
+			
+			_visual_tween.tween_method(func(v): mat.set_shader_parameter("size", v), 
+				mat.get_shader_parameter("size"), target_size, 0.5)
+			
+			_visual_tween.tween_method(func(v): mat.set_shader_parameter("base_intensity", v), 
+				mat.get_shader_parameter("base_intensity"), target_intensity, 0.5)
+				
+			# Integers like layer_count step abruptly, maybe better to set directly or floor the tween
+			mat.set_shader_parameter("layer_count", target_layer_count)
 	
 	# --- MODULATE LOGIC ---
 	if is_fully_blighted:

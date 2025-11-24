@@ -66,6 +66,11 @@ func apply_blight_damage( dmg: int ) -> void:
 		current_health -= dmg
 		if current_health <= 0:
 			destroy_node()
+			return # Stop processing if destroyed
+	
+	# Notify Behavior (For Visuals/Logic)
+	if active_behavior:
+		active_behavior.on_damage_received(current_health, current_shield)
 	
 	# Visual feedback could be triggered here (flash, shake, etc)
 

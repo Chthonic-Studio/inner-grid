@@ -1,17 +1,25 @@
-[gd_scene load_steps=6 format=3 uid="uid://dgbojfandfkki"]
+[gd_scene load_steps=8 format=3 uid="uid://dgbojfandfkki"]
 
 [ext_resource type="Texture2D" uid="uid://cp2vdrbn2mrln" path="res://Assets/Spritesheet.png" id="1_5g7os"]
 [ext_resource type="Script" uid="uid://21u3n58mqy0q" path="res://Scripts/node.gd" id="1_6b8r6"]
+[ext_resource type="Material" uid="uid://cde6hh5agmql5" path="res://Assets/electric_ball.tres" id="3_1ig23"]
+[ext_resource type="Shader" uid="uid://c6quawot2a8rc" path="res://Assets/Shaders/distortion_shockwave.gdshader" id="3_hphxb"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_5g7os"]
 atlas = ExtResource("1_5g7os")
 region = Rect2(487, 620, 27, 153)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1ig23"]
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_rvq8p"]
 atlas = ExtResource("1_5g7os")
-region = Rect2(222, -0.35661316, 157, 155.35661)
+region = Rect2(222, 0, 155, 155)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qtqr5"]
+shader = ExtResource("3_hphxb")
+shader_parameter/strength = 0.0670000031825
+shader_parameter/radius = 0.542000025745
+shader_parameter/aberration = 0.5600000266
+shader_parameter/width = 0.04959999874512
+shader_parameter/feather = 0.41600001976
 
 [node name="Node" type="Button" node_paths=PackedStringArray("up_connection", "right_connection", "left_connection", "down_connection")]
 custom_minimum_size = Vector2(80, 80)
@@ -107,7 +115,7 @@ grow_horizontal = 2
 texture = SubResource("AtlasTexture_5g7os")
 
 [node name="NodeVisuals" type="TextureRect" parent="TileContent"]
-material = SubResource("ShaderMaterial_1ig23")
+material = ExtResource("3_1ig23")
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -125,6 +133,7 @@ expand_mode = 1
 
 [node name="ColorRect" type="ColorRect" parent="TileContent/NodeVisuals"]
 visible = false
+material = SubResource("ShaderMaterial_qtqr5")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

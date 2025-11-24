@@ -19,3 +19,7 @@ func on_network_update(is_connected: bool) -> void:
 
 func apply_passives(level: Level, current_tile: GameTile) -> void:
 	pass
+
+# New virtual method for reacting to damage/shield changes
+func on_damage_received(current_health: int, current_shield: int) -> void:
+	pass
