@@ -71,17 +71,9 @@ func apply_blight_damage( dmg: int ) -> void:
 	# Notify Behavior (For Visuals/Logic)
 	if active_behavior:
 		active_behavior.on_damage_received(current_health, current_shield)
-	
-	# Visual feedback could be triggered here (flash, shake, etc)
 
 func destroy_node() -> void:
-	# We call specific logic on the Tile via the Level/Manager flow usually,
-	# but here we are the child. We emit signal so Tile can handle cleanup.
 	node_destroyed.emit()
-	
-	# IMPORTANT: We need to tell the tile to unreference us.
-	# Usually Tile.remove_node() handles this, but if we die from damage,
-	# we are initiating the death.
 	var parent = get_parent()
 	if parent and parent.has_method("remove_node"):
 		parent.remove_node()
@@ -95,14 +87,19 @@ func update_visuals() -> void:
 	left_connection.visible = false
 	right_connection.visible = false
 	
-	# LOGIC UPDATE: Only dim if the node actually REQUIRES a network connection
 	if node_type.requires_network_connection and not connected:
 		modulate = Color(0.5, 0.5, 0.5) # Dim effect
 	else:
 		modulate = Color.WHITE
 
 func show_connection(direction: Vector2i, active: bool) -> void:
-	if direction == Vector2i.UP: up_connection.visible = active
-	elif direction == Vector2i.DOWN: down_connection.visible = active
-	elif direction == Vector2i.LEFT: left_connection.visible = active
-	elif direction == Vector2i.RIGHT: right_connection.visible = active
+	var conn = get_connection_rect(direction)
+	if conn:
+		conn.visible = active
+
+func get_connection_rect(direction: Vector2i) -> NinePatchRect:
+	if direction == Vector2i.UP: return up_connection
+	elif direction == Vector2i.DOWN: return down_connection
+	elif direction == Vector2i.LEFT: return left_connection
+	elif direction == Vector2i.RIGHT: return right_connection
+	return null

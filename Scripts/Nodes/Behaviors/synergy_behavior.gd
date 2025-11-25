@@ -1,27 +1,28 @@
 class_name SynergyBehavior extends NodeBehavior
 
-# State Cache: Stores { Vector2i(grid_pos) : String(node_type_name) }
+# Cache to avoid re-loading the shader
+var _energy_line_shader : Shader
 var _last_neighbor_state: Dictionary = {}
+
+func _on_setup() -> void:
+	_energy_line_shader = load("res://Assets/Shaders/energy_line.gdshader")
 
 func perform_tick(level: Level) -> void:
 	pass
 
 func apply_passives(level: Level, current_tile: GameTile) -> void:
-	# step_bonus is e.g., 0.25 (25%)
 	var step_bonus = float(data.base_output) / 100.0
-	
 	var offsets = [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]
 	var grid_pos = parent_node.grid_position
 	
-	# 1. Collect valid neighbors AND build current state snapshot
 	var valid_neighbors = []
 	var current_neighbor_state = {}
 	
+	# 1. Identify Neighbors
 	for offset in offsets:
 		var target_pos = grid_pos + offset
 		if level._is_valid_pos(target_pos):
 			var tile = level._get_tile_at_position(target_pos)
-			# Synergy only boosts nodes that have a node instance
 			if tile and tile.has_node and tile.local_node:
 				var t_name = tile.local_node.node_type.node_name
 				
@@ -30,18 +31,9 @@ func apply_passives(level: Level, current_tile: GameTile) -> void:
 					"type": t_name,
 					"dir": offset
 				})
-				
-				# Record state for change detection
 				current_neighbor_state[target_pos] = t_name
 
-	# 2. Check for changes (Compare hashes)
-	# Level.gd calls this function frequently. We only want to log if the neighborhood changed.
-	var should_log = current_neighbor_state.hash() != _last_neighbor_state.hash()
-	
-	# Update cache
-	_last_neighbor_state = current_neighbor_state.duplicate()
-
-	# 3. Group by type
+	# 2. Group and Calculate Bonuses
 	var type_counts = {}
 	for entry in valid_neighbors:
 		var t_name = entry["type"]
@@ -49,26 +41,39 @@ func apply_passives(level: Level, current_tile: GameTile) -> void:
 			type_counts[t_name] = 0
 		type_counts[t_name] += 1
 	
-	# 4. Apply Boosts (Always) & Log (Conditional)
-	if should_log and valid_neighbors.size() > 0:
-		print("\n=== SYNERGY CALCULATION AT %s ===" % [grid_pos])
-		
+	# 3. Apply Boosts and Visuals
 	for entry in valid_neighbors:
 		var neighbor_node = entry["node"]
 		var type_name = entry["type"]
 		var count = type_counts[type_name]
+		var dir = entry["dir"]
 		
-		# Logic: +X% per node in the group
+		# Apply Logic
 		var total_bonus = step_bonus * count
-		
-		# ALWAYS Apply (Level resets multipliers to 1.0 every update, so we must re-apply)
 		neighbor_node.current_multiplier += total_bonus
-		parent_node.show_connection(entry["dir"], true)
 		
-		# CONDITIONALLY Log
-		if should_log:
-			print(" > Neighbor: %s | Count: %d | Bonus: +%.2f" % [type_name, count, total_bonus])
-			print(" > New Multiplier for neighbor: %.2f" % neighbor_node.current_multiplier)
+		# Apply Visuals (Energy Line)
+		_apply_synergy_visuals(parent_node, dir, count)
+		_apply_synergy_visuals(neighbor_node, -dir, count)
+		
+		# Turn on connection visibility
+		parent_node.show_connection(dir, true)
+		neighbor_node.show_connection(-dir, true)
+		
+	_last_neighbor_state = current_neighbor_state.duplicate()
 
-	if should_log and valid_neighbors.size() > 0:
-		print("================================\n")
+func _apply_synergy_visuals(node: GameNode, direction: Vector2i, count: int) -> void:
+	if not _energy_line_shader: return
+	
+	var rect = node.get_connection_rect(direction)
+	if rect:
+		# Create unique material if needed or check if already correct
+		if not rect.material or not (rect.material is ShaderMaterial) or (rect.material as ShaderMaterial).shader != _energy_line_shader:
+			var mat = ShaderMaterial.new()
+			mat.shader = _energy_line_shader
+			rect.material = mat
+		
+		# Update Thickness based on Synergy Count
+		# 1 Node = 1.0 scale, 4 Nodes = 2.5 scale
+		var thickness = 1.0 + (float(count - 1) * 0.5)
+		(rect.material as ShaderMaterial).set_shader_parameter("thickness_scale", thickness)
