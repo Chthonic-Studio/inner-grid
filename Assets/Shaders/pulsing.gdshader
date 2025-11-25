@@ -1,34 +1,37 @@
 shader_type canvas_item;
 
-uniform vec4 shine_color : source_color = vec4(1.0); //Shine color
-uniform float alpha_limit : hint_range(0.0, 1.0, 0.1) = 0.0; //Alpha color limit to apply the shine, for example, if you won't to apply the shine to semi-transparent pixels
-uniform float cycle_speed : hint_range(0.0, 10.0, 0.1) = 1.0; //Pulse cycle speed
-uniform bool full_pulse_cycle = false; //[False = Do the effect and make a pause] [True = Do the effect continuosly]
-uniform int mode : hint_range(0, 2, 1) = 0; //[0 = Always off] [1 = Pulse mode] [2 = Always on]
+uniform vec4 shine_color : source_color = vec4(1.0, 1.0, 1.0, 1.0); 
+uniform float cycle_speed : hint_range(0.0, 10.0, 0.1) = 1.0; 
+uniform bool heartbeat_mode = true; 
 
 void fragment()
 {
-	//Check if the effect is enabled
-	if (mode > 0)
-	{
-		//Check the pixel alpha value
-		if (COLOR.a >= alpha_limit)
-		{
-			//Check the mode
-			switch (mode)
-			{
-				case 1: //Pulse mode
-				{
-					float cycle = sin(TIME * cycle_speed);
-					COLOR.rgb = mix(COLOR.rgb, shine_color.rgb, (((cycle >= 0.0) || (full_pulse_cycle)) ? abs(cycle) : 0.0) * shine_color.a);
-					break;
-				}
-				case 2: //Always on
-				{
-					COLOR.rgb = mix(COLOR.rgb, shine_color.rgb, shine_color.a);
-					break;
-				}
-			}
-		}
+	vec4 tex_color = texture(TEXTURE, UV);
+	
+	float pulse = 0.0;
+	
+	if (heartbeat_mode) {
+		// Heartbeat math: sharp peaks, long rest
+		// sin(x) mapped to 0-1, raised to high power for sharpness
+		float t = TIME * cycle_speed;
+		float wave = sin(t);
+		
+		// Creating a "Lub-Dub" double beat rhythm
+		// Beat 1 (Major)
+		float b1 = pow(max(0.0, sin(t)), 8.0);
+		// Beat 2 (Minor, offset slightly)
+		float b2 = pow(max(0.0, sin(t - 0.4)), 16.0) * 0.5;
+		
+		pulse = max(b1, b2);
+	} else {
+		// Standard smooth sine
+		pulse = (sin(TIME * cycle_speed) + 1.0) * 0.5;
 	}
+	
+	// Apply pulse as an ADDITIVE flash on top of original color
+	// This preserves the underlying sprite art while making it glow
+	vec3 flash = shine_color.rgb * pulse * shine_color.a;
+	
+	COLOR.rgb = tex_color.rgb + flash;
+	COLOR.a = tex_color.a;
 }

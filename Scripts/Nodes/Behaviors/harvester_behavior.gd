@@ -1,27 +1,21 @@
 class_name HarvesterBehavior extends NodeBehavior
 
-var _visual : ColorRect
-
 func _on_setup() -> void:
-	# Create Visual Overlay
-	_visual = ColorRect.new()
-	_visual.size = Vector2(60, 60)
-	_visual.position = Vector2(10, 10)
-	_visual.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	
-	var shader = load("res://Assets/Shaders/pulsing.gdshader")
-	if shader:
-		var mat = ShaderMaterial.new()
-		mat.shader = shader
-		mat.set_shader_parameter("shine_color", Color(0.0, 1.0, 0.5, 0.5)) # Greenish pulse
-		mat.set_shader_parameter("alpha_limit", 0.0)
-		mat.set_shader_parameter("cycle_speed", 3.0)
-		mat.set_shader_parameter("full_pulse_cycle", true)
-		mat.set_shader_parameter("mode", 1) # Pulse Mode
-		
-		_visual.material = mat
-	
-	parent_node.add_child(_visual)
+	# Apply pulsing effect directly to the Node's main sprite
+	var node_visuals = parent_node.get_node_or_null("TileContent/NodeVisuals")
+	if node_visuals:
+		var shader = load("res://Assets/Shaders/pulsing.gdshader")
+		if shader:
+			var mat = ShaderMaterial.new()
+			mat.shader = shader
+			
+			# Heartbeat Setup
+			# Greenish flash
+			mat.set_shader_parameter("shine_color", Color(0.2, 1.0, 0.2, 0.6)) 
+			mat.set_shader_parameter("cycle_speed", 4.0) # Faster for heartbeat rhythm
+			mat.set_shader_parameter("heartbeat_mode", true)
+			
+			node_visuals.material = mat
 
 func perform_tick(level: Level) -> void:
 	if parent_node.connected:

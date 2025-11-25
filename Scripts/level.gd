@@ -63,7 +63,6 @@ func _ready() -> void:
 	# 3. Build Grid
 	for row in GRID_ROWS:
 		for col in GRID_COLS:
-			# FIX: Use (col, row) for position key. X=Col, Y=Row.
 			var pos = Vector2i(col, row)
 			var tile = tile_scene.instantiate()
 			tile.name = "Tile_%d_%d" % [row, col]
@@ -100,7 +99,7 @@ func _ready() -> void:
 	recalculate_network()
 	recalculate_modifiers()
 
-	# 7. SETUP BLIGHT MANAGER (Must be after grid build)
+	# 7. SETUP BLIGHT MANAGER
 	BlightManager.setup(self, GameGrid, level_resource)
 	BlightManager.base_damaged.connect(_on_base_damaged)
 
@@ -138,7 +137,6 @@ func _on_tile_placement_requested(tile: GameTile, grid_position: Vector2i) -> vo
 		EconomyManager.spend_resources(_current_selected_node_res.placement_cost, _current_selected_node_res.main_resource_placement_cost)
 		tile.set_node(_current_selected_node_res)
 		
-		# --- SHIELD REGISTRATION ---
 		if _current_selected_node_res.node_name == "Shield":
 			BlightManager.register_shield(tile.local_node, grid_position)
 		
@@ -158,14 +156,11 @@ func _on_tile_purge_requested(tile: GameTile, grid_position: Vector2i) -> void:
 	if refund > 0:
 		EconomyManager.gain_resources(refund, "Building")
 	
-	# --- SHIELD UNREGISTRATION ---
-	# Must happen before remove_node() destroys the instance
 	if node_type.node_name == "Shield":
 		BlightManager.unregister_shield(tile.local_node, grid_position)
 		
 	tile.remove_node()
 	
-	# AOE Purge logic
 	var offsets = [
 		Vector2i(0,0), Vector2i(1,0), Vector2i(-1,0), Vector2i(0,1), Vector2i(0,-1),
 		Vector2i(1,1), Vector2i(-1,-1), Vector2i(1,-1), Vector2i(-1,1)
@@ -184,36 +179,30 @@ func _on_node_removed_from_tile(tile, grid_pos):
 
 func _on_base_damaged(current_health: int) -> void:
 	print("ALERT: Base is under attack! Health: ", current_health)
-	# Visual feedback: Shake screen or flash red (optional for now)
-		
 	if current_health <= 0:
 		print("GAME OVER: The Core has fallen.")
-		LevelManager.lose() # Ensure LevelManager has this method or just print for now
-		# TimeManager.menu_pause() # Optional: Stop the game
+		LevelManager.lose()
 
 func recalculate_modifiers() -> void:
 	var all_tiles = GameGrid.get_children()
 	
-	# 1. Reset all Modifiers to Base
+	# 1. Reset all Modifiers
 	for tile in all_tiles:
 		var pos = Vector2i(tile.col, tile.row)
-		# Reset Tile Resistance
 		tile.blight_resistance = level_resource.tile_blight_resistance.get(pos, 0.0)
 		
-		# Reset Node Multiplier
 		if tile.has_node and tile.local_node:
 			tile.local_node.current_multiplier = 1.0
-			
-			# IMPORTANT: Hide ALL lines initially.
+			# Hide all lines initially
 			tile.local_node.show_connection(Vector2i.UP, false)
 			tile.local_node.show_connection(Vector2i.DOWN, false)
 			tile.local_node.show_connection(Vector2i.LEFT, false)
 			tile.local_node.show_connection(Vector2i.RIGHT, false)
 	
-	# 2. Re-calculate network (this turns network lines back on)
+	# 2. Re-calculate network
 	recalculate_network()
 
-	# 3. Apply Active Passives (Synergy/Sensors turn their specific lines on)
+	# 3. Apply Active Passives
 	for tile in all_tiles:
 		if tile.has_node and tile.local_node:
 			tile.local_node.apply_passives(self, tile)
@@ -256,17 +245,36 @@ func recalculate_network() -> void:
 				continue
 				
 			var neighbor_node = neighbor_tile.local_node
-			var neighbor_name = neighbor_node.node_type.node_name
+			var neighbor_type = neighbor_node.node_type
+			var neighbor_name = neighbor_type.node_name
 			
-			var current_is_conductor = (current_tile.local_node.node_type.node_name == "Conduit" or current_tile.local_node.node_type.node_name == "Core")
+			var current_node = current_tile.local_node
+			var current_name = current_node.node_type.node_name
 			
-			if current_is_conductor:
+			# --- RULE ENFORCEMENT ---
+			# Conduits and Cores only propagate connectivity to other Conduits, Generators, Harvesters, and Cores.
+			# Nodes like Shield, Sensor, Synergy, Purifier do not participate in the "Pipe Network".
+			
+			# Is the current node capable of extending the network?
+			var current_is_source = (current_name == "Conduit" or current_name == "Core")
+			
+			# Is the neighbor capable of receiving a network connection?
+			# We rely on 'requires_network_connection' or explicit type checks
+			# Note: Core also "receives" to complete loops, and Conduit receives to extend.
+			var neighbor_is_valid_target = (
+				neighbor_type.requires_network_connection or 
+				neighbor_name == "Conduit" or 
+				neighbor_name == "Core"
+			)
+			
+			if current_is_source and neighbor_is_valid_target:
 				neighbor_node.set_connected_status(true)
 				
-				# Visuals
-				current_tile.local_node.show_connection(dir, true)
+				# Show Visual Lines for Network
+				current_node.show_connection(dir, true)
 				neighbor_node.show_connection(-dir, true)
 				
+				# Continue BFS only if the neighbor is also a conductor (Conduit/Core)
 				if (neighbor_name == "Conduit" or neighbor_name == "Core") and not visited.has(neighbor_pos):
 					visited[neighbor_pos] = true
 					open_list.append(neighbor_pos)

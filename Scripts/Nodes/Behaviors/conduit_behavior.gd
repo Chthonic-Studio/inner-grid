@@ -14,9 +14,6 @@ func on_network_update(is_connected: bool) -> void:
 func apply_passives(level: Level, current_tile: GameTile) -> void:
 	if not _tube_shader: return
 	
-	# We need to determine the "Flow Direction" towards the Core.
-	# Flow is from High Distance -> Low Distance (closer to core).
-	
 	var core_pos = level.level_resource.core_starting_tile
 	var my_pos = parent_node.grid_position
 	var my_dist = my_pos.distance_to(core_pos)
@@ -29,16 +26,22 @@ func apply_passives(level: Level, current_tile: GameTile) -> void:
 			var tile = level._get_tile_at_position(target_pos)
 			if tile and tile.has_node and tile.local_node:
 				var neighbor = tile.local_node
+				var n_name = neighbor.node_type.node_name
 				
-				# Only apply visual if we are actually connected to this neighbor logically
-				# Check visibility of connection line as a proxy for logical connection
-				# (Since Level.gd handles the BFS and visibility toggling)
+				# RULE: Conduits only act as pipes for Core, Harvester, Generator, and other Conduits.
+				var valid_pipe_target = (
+					n_name == "Core" or 
+					n_name == "Conduit" or 
+					n_name == "Generator" or 
+					n_name == "Harvester"
+				)
+				
+				# Only apply visual if we are connected and it's a valid pipe target
 				var my_conn = parent_node.get_connection_rect(dir)
-				if my_conn.visible:
+				if my_conn.visible and valid_pipe_target:
 					_apply_tube_shader(my_conn, my_dist, target_pos.distance_to(core_pos), dir)
 
 func _apply_tube_shader(rect: NinePatchRect, my_dist: float, neighbor_dist: float, dir: Vector2i) -> void:
-	# Setup Material
 	if not rect.material or not (rect.material is ShaderMaterial) or (rect.material as ShaderMaterial).shader != _tube_shader:
 		var mat = ShaderMaterial.new()
 		mat.shader = _tube_shader
@@ -47,29 +50,10 @@ func _apply_tube_shader(rect: NinePatchRect, my_dist: float, neighbor_dist: floa
 		rect.material = mat
 	
 	var mat = rect.material as ShaderMaterial
-	
-	# Logic: 
-	# If Neighbor is Closer (neighbor_dist < my_dist): Flow is OUT (Me -> Neighbor).
-	# If Neighbor is Further (neighbor_dist > my_dist): Flow is IN (Neighbor -> Me).
-	
 	var is_flowing_out = neighbor_dist < my_dist
-	
-	# Texture Coordinates on NinePatchRects:
-	# Usually 0 is Left/Top, 1 is Right/Bottom.
-	# However, the Rects in node.tscn are rotated.
-	# UP (No Rot): Bottom->Top? 0->1 Y? 
-	# Let's assume standard UV x:0->1 flows along the length.
-	
-	# Speed + = 0->1. Speed - = 1->0.
 	var flow_speed = 2.0
 	
 	if is_flowing_out:
-		# OUT means moving away from center of node.
-		# UV 0 is usually start.
-		mat.set_shader_parameter("speed", -flow_speed) # 1->0 (Towards edge?)
+		mat.set_shader_parameter("speed", -flow_speed) 
 	else:
-		# IN means moving towards center of node.
-		mat.set_shader_parameter("speed", flow_speed) # 0->1 (Towards center?)
-	
-	# NOTE: Without seeing exact UV rotation in editor, signs might need swapping.
-	# Assuming Left-to-Right texture mapping on the rect.
+		mat.set_shader_parameter("speed", flow_speed) 

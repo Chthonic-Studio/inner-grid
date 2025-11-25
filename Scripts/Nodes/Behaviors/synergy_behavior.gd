@@ -1,6 +1,5 @@
 class_name SynergyBehavior extends NodeBehavior
 
-# Cache to avoid re-loading the shader
 var _energy_line_shader : Shader
 var _last_neighbor_state: Dictionary = {}
 
@@ -18,13 +17,16 @@ func apply_passives(level: Level, current_tile: GameTile) -> void:
 	var valid_neighbors = []
 	var current_neighbor_state = {}
 	
-	# 1. Identify Neighbors
 	for offset in offsets:
 		var target_pos = grid_pos + offset
 		if level._is_valid_pos(target_pos):
 			var tile = level._get_tile_at_position(target_pos)
 			if tile and tile.has_node and tile.local_node:
 				var t_name = tile.local_node.node_type.node_name
+				
+				# RULE: Synergy should NOT connect to Conduits or other Synergy nodes
+				if t_name == "Conduit" or t_name == "Synergy":
+					continue
 				
 				valid_neighbors.append({
 					"node": tile.local_node, 
@@ -33,7 +35,6 @@ func apply_passives(level: Level, current_tile: GameTile) -> void:
 				})
 				current_neighbor_state[target_pos] = t_name
 
-	# 2. Group and Calculate Bonuses
 	var type_counts = {}
 	for entry in valid_neighbors:
 		var t_name = entry["type"]
@@ -41,22 +42,18 @@ func apply_passives(level: Level, current_tile: GameTile) -> void:
 			type_counts[t_name] = 0
 		type_counts[t_name] += 1
 	
-	# 3. Apply Boosts and Visuals
 	for entry in valid_neighbors:
 		var neighbor_node = entry["node"]
 		var type_name = entry["type"]
 		var count = type_counts[type_name]
 		var dir = entry["dir"]
 		
-		# Apply Logic
 		var total_bonus = step_bonus * count
 		neighbor_node.current_multiplier += total_bonus
 		
-		# Apply Visuals (Energy Line)
 		_apply_synergy_visuals(parent_node, dir, count)
 		_apply_synergy_visuals(neighbor_node, -dir, count)
 		
-		# Turn on connection visibility
 		parent_node.show_connection(dir, true)
 		neighbor_node.show_connection(-dir, true)
 		
@@ -67,13 +64,17 @@ func _apply_synergy_visuals(node: GameNode, direction: Vector2i, count: int) -> 
 	
 	var rect = node.get_connection_rect(direction)
 	if rect:
-		# Create unique material if needed or check if already correct
 		if not rect.material or not (rect.material is ShaderMaterial) or (rect.material as ShaderMaterial).shader != _energy_line_shader:
 			var mat = ShaderMaterial.new()
 			mat.shader = _energy_line_shader
 			rect.material = mat
+			
+			# Tweak for "Electricity" look (Jagged)
+			mat.set_shader_parameter("roughness", 5) # Higher = more jagged noise
+			mat.set_shader_parameter("frequency", 12) # More ripples
+			mat.set_shader_parameter("energy", 5.0) # Higher amplitude
+			mat.set_shader_parameter("speed", 2.0) # Faster jitter
+			mat.set_shader_parameter("color", Color(0.2, 1.0, 1.0, 1.0)) # Cyan Electric
 		
-		# Update Thickness based on Synergy Count
-		# 1 Node = 1.0 scale, 4 Nodes = 2.5 scale
 		var thickness = 1.0 + (float(count - 1) * 0.5)
 		(rect.material as ShaderMaterial).set_shader_parameter("thickness_scale", thickness)
